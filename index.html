@@ -9,21 +9,17 @@
 		<meta name="apple-mobile-web-app-capable" content="yes"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 
-        <script src="cordova.js"></script>
+
 		<!-- css -->
 		<link href="build/enyo.css" rel="stylesheet"/>
 		<link href="build/app.css" rel="stylesheet"/>
 		<!-- js -->
 		<script src="build/enyo.js"></script>
 		<script src="build/app.js"></script>
+
+
 	</head>
-	<body class="enyo-unselectable">
-		<script>
-			if (!window.Grundschrift && window.Grundschrift.App) {
-				alert('No application build found, redirecting to debug.html.');
-				location = 'debug.html';
-			}
-			new Grundschrift.App().renderInto(document.body);
-		</script>
+	<body class="enyo-unselectable" onload="onLoad()">
+        <script src="cordova.js"></script>
 	</body>
 </html>
