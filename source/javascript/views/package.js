@@ -1,0 +1,17 @@
+enyo.depends(
+    'Widgets',
+    'BaseView.js',
+    'Panels.js',
+    'PlayTimeOverPopup.js',
+    'Splash.js',
+    'GridList.js',
+    'LevelMenu.js',
+    'ChildMenu.js',
+    'Canvas.js',
+    'MainCanvas.js',
+    'Password.js',
+    'Main.js',
+    'LevelFinishedPopup.js',
+    'RememberMe',
+    'Admin'
+);

@@ -1,0 +1,83 @@
+@import "variables.less";
+
+.grundschriftView {
+  height: 100%;
+  background: @backgroundColor;
+  div.onyx-toolbar {
+    background-image: none;
+    background-color: @headerColor;
+    border: 0px none;
+  }
+  &.leftHand .enyo-fittable-columns-layout,
+  &.leftHand.enyo-fittable-columns-layout {
+    direction: rtl;
+    div.onyx-toolbar {
+      text-align: right;
+    }
+    > * {
+      direction: ltr;
+    }
+    .enyo-scroller {
+      direction: rtl;
+      .gridList {
+        direction: ltr;
+      }
+    }
+  }
+
+  div.sideBarHeader {
+    border: none;
+    background-image: url('@{assets-url}/images/sideBarBorder.png');
+    background-position: right bottom;
+    background-size: auto;
+    background-repeat: repeat-y;
+    padding-right: 25px;
+  }
+  div.sideBarContent {
+    background-color: @blue;
+    background-image: url('@{assets-url}/images/sideBarBorder.png');
+    background-position: right top;
+    background-repeat: repeat-y;
+    padding-top: @marginWidth;
+    padding-bottom: @marginWidth;
+    padding-right: @marginWidth;
+    &.orange {
+      background-color: @orange;
+    }
+    &.red {
+      background-color: @red;
+    }
+    &.green {
+      background-color: @green;
+    }
+    &.blue {
+      background-color: @blue;
+    }
+    &.violet {
+      background-color: @violet;
+    }
+    &.darkblue {
+      background-color: @darkblue;
+    }
+    &.none {
+      background-color: @gridItemBackground;
+    }
+  }
+  &.leftHand {
+    div.sideBarHeader {
+      background-image: url('@{assets-url}/images/sideBarBorder_left.png');
+      background-position: left bottom;
+      padding-left: 25px;
+      padding-right: 0;
+      direction: rtl;
+    }
+    div.sideBarContent {
+      background-image: url('@{assets-url}/images/sideBarBorder_left.png');
+      background-position: left top;
+      padding-left: @marginWidth;
+      padding-right: 0;
+      direction: rtl;
+    }
+  }
+}
+

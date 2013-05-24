@@ -1,0 +1,15 @@
+enyo.depends(
+    'Widgets',
+    'grundschrift.less',
+    'BaseView.less',
+    'PlayTimeOverPopup.less',
+    'LevelMenu.less',
+    'ChildMenu.less',
+    'Canvas.less',
+    'Password.less',
+    'Main.less',
+    'Splash.less',
+    'RememberMe.less',
+    'LevelFinishedPopup.less',
+    'Admin'
+);

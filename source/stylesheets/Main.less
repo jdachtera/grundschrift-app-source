@@ -1,0 +1,85 @@
+@import "variables";
+
+.main {
+  -webkit-user-select: none;
+  .sessionStars {
+    text-align: center;
+    .wrapper {
+      display: inline-block;
+      margin-bottom: @marginWidth;
+      width: 85%;
+    }
+    img {
+      width: 15%;
+      height: auto;
+      &.disabled {
+        opacity: 0.4;
+      }
+    }
+  }
+
+  .sideBarContent {
+    > div {
+      margin-left: 0;
+    }
+    div.variants{
+      margin-left: @marginWidth;
+      margin-top: @marginWidth * 2;
+      background-image: url('@{assets-url}/images/greyline.png');
+      background-repeat: repeat-x;
+      background-position: 10pt 66%;
+      .wrapper {
+        display: inline-block;
+        .rounded;
+        &:active {
+          background-color: @highlightColor;
+        }
+        width: @iconSize;
+        text-align: center;
+        img {
+          height: @iconSize;
+        }
+      }
+    }
+    padding-top: 10pt;
+    .illustration { //width:80%;
+      margin-right: @marginWidth * 2;
+      margin-bottom: @marginWidth;
+      border-style: solid;
+      -webkit-border-image: url("@{assets-url}/images/illustrationBorder.png") 10 10 10 10 stretch stretch;
+      border-width: 5px 5px 5px 0px;
+      font-size: 0;
+      img {
+        width: 100%;
+        background: #FFF;
+      }
+      .caption {
+        span.levelPart {
+          color: red;
+        }
+        margin: 0;
+        padding: 0;
+        font-size: 13pt;
+        line-height: 17pt;
+        margin-top: -17pt;
+        text-align: right;
+        padding-right: 5pt;
+        text-shadow: -1pt 0 white,0 -1pt white, 1pt 0 white, 0 1pt white;
+        -webkit-text-shadow: -1pt 0 white,0 -1pt white, 1pt 0 white, 0 1pt white;
+      }
+    }
+  }
+  &.leftHand {
+
+    .sideBarContent .illustration {
+      text-align: right;
+      -webkit-border-image: url("@{assets-url}/images/illustrationBorder_left.png") 10 10 10 10 stretch stretch;
+      margin-left: @marginWidth * 2;
+      margin-right: 0;
+      border-width: 5px 0px 5px 5px;
+    }
+  }
+  img.demoFinger {
+    position: absolute;
+  }
+}

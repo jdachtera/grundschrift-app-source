@@ -1,0 +1,27 @@
+@import "../variables";
+
+.admin {
+  .menu {
+    .onyx-menu-item {
+      font-size: @mediumFont;
+    }
+  }
+  .level-item {
+    &.hasPaths {
+      background-color: green;
+    }
+    .bordered;
+    &:active {
+      .bordered.active
+    ;
+    }
+    text-align: center;
+    font-size: @bigFont;
+  }
+  .divider {
+    clear: both;
+    float: none;
+    width: 100%;
+  }
+
+}

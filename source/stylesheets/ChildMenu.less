@@ -1,0 +1,42 @@
+@import "variables";
+
+// The children Grid
+.childGrid {
+  height: 100%;
+  -webkit-user-select: none;
+  .gridList {
+    margin-right: @marginWidth;
+    margin-bottom: @marginWidth;
+    .gridItem { //.bordered;
+      &:active { //.bordered.active;
+        background-color: @highlightColor;
+      }
+      padding: @marginWidth;
+      padding-bottom: 0;
+      background-color: #fffafa;
+      border: 1px darken(#fff, 10%) solid;
+      .rounded(5px);
+
+      .nameWrapper {
+        text-align: center;
+        font-weight: bold;
+        font-size: 1.1em;
+        letter-spacing: 0.1em;
+        padding: @marginWidth 0;
+        .name {
+          padding: 0 4px;
+          display: inline-block;
+          .rounded(5px);
+          background-color: #fffafa;
+        }
+
+      }
+      .image {
+        .rounded(3px);
+        background-repeat: no-repeat;
+        height: 150px;
+      }
+    }
+  }
+}
+

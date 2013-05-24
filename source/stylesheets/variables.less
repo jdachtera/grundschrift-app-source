@@ -1,0 +1,51 @@
+//Colors
+@borderColor: #47EAC7;
+@backgroundColor: #E8EEDF;
+@headerColor: #E4D00A;
+@gridItemBackground: #3B444B;
+@orange: #e7792c;
+@red: #a4252a;
+@green: #7aab41;
+@blue: #26a8d4;
+@violet: #70275d;
+@darkblue: #006ca7;
+@levelSolvedBackground: #11aa22;
+@highlightColor: #AAA;
+
+// Sizes
+@marginWidth: 16px;
+@paddingWidth: 4px;
+@smallIconSize: 16px;
+@iconSize: 48px;
+@radius: 16px;
+@borderWidth: 4px;
+@smallFont: 20px;
+@mediumFont: 30px;
+@bigFont: 50px;
+
+// Strings
+@assets-url: "../../assets";
+
+.rounded(@radius: 16px) {
+  border-radius: @radius;
+  &.top {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom-width: 0;
+  }
+  &.bottom {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-top-width: 0;
+  }
+}
+
+.bordered() {
+  border-color: desaturate(lighten(@borderColor, 20%), 40%);
+  border-style: solid;
+  border-width: @borderWidth;
+
+  .active() {
+    border-color: desaturate(@borderColor, 30%);
+  }
+}

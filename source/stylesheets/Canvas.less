@@ -1,0 +1,14 @@
+@import "variables";
+
+.canvasContainer {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  .wrapper {
+    overflow-x: visible; // Jelly Bean fix: http://stackoverflow.com/questions/11535413/duplicated-animation-after-update-to-android-jelly-beans
+    background-image: url('@{assets-url}/images/greyline.png');
+    background-repeat: repeat-x;
+    background-position: 10pt 67.5%;
+  }
+
+}

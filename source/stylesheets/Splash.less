@@ -1,0 +1,26 @@
+@import "variables";
+
+.splash {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 20;
+
+  img {
+    position: absolute;
+    z-index: 31;
+  }
+
+  .spinner {
+    position: absolute;
+    display: block;
+    height: 100%;
+    width: 100%;
+    background-image: url("@{assets-url}/images/ajax-loader.gif");
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    z-index: 32;
+  }
+}

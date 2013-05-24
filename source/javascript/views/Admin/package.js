@@ -1,0 +1,13 @@
+enyo.depends(
+    'EditChild.js',
+    'EditChildren.js',
+    'EditLevels.js',
+    'EditCanvas.js',
+    'EditLevel.js',
+    'Export.js',
+    'Settings.js',
+    'Graph.js',
+    'Statistics.js',
+    'Menu.js',
+    'Panels.js'
+);

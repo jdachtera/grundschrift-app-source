@@ -1,0 +1,68 @@
+@import "../variables";
+
+.levelMenuItem { //.bordered;
+  padding: @marginWidth;
+  padding-bottom: 0;
+  &:active, &.selected { //.bordered.active
+  }
+  .starsWrapper, .caption {
+    text-align: center;
+  }
+
+  .starsWrapper {
+    padding: @marginWidth 0;
+
+    .stars {
+      .rounded(5px);
+      background-color: #fffafa;
+      padding: 0 4px;
+      display: inline-block;
+    }
+  }
+
+  .caption {
+    color: #333;
+    img {
+      height: 140px;
+    }
+    .rounded(3px);
+  }
+
+  border: 1px darken(#fff, 10%) solid;
+  .rounded(5px);
+
+  &.solved {
+    background-color: green;
+  }
+
+  background-color: #fffafa;
+
+  opacity: 0.5;
+  &.enabled {
+    opacity: 1;
+    &:active, &.selected {
+      background-color: @highlightColor;
+    }
+  }
+  &.orange .caption {
+    background-color: @orange;
+  }
+  &.red .caption {
+    background-color: @red;
+  }
+  &.green .caption {
+    background-color: @green;
+  }
+  &.blue .caption {
+    background-color: @blue;
+  }
+  &.violet .caption {
+    background-color: @violet;
+  }
+  &.darkblue .caption {
+    background-color: @darkblue;
+  }
+  &.none .caption {
+    background-color: @gridItemBackground;
+  }
+}
