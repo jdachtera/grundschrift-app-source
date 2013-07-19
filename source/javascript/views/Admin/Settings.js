@@ -22,6 +22,8 @@ enyo.kind({
                 ]},
                 {tag:'h2', content:'Spielzeit pro Kind:'},
                 {kind:'Grundschrift.Views.IntegerSlider', caption:'Minuten', min:0, max:60, name:'allowedPlayTime', setting:'allowedPlayTime', onChange:'setSetting'},
+				{tag:'h2', content:'Erkennungstoleranz:'},
+				{kind:'Grundschrift.Views.IntegerSlider', caption:'maximal', min:30, max:80, name:'maxTolerance', setting:'maxTolerance', onChange:'setSetting'},
                 {tag:'h2', content:'Wechsel zum nächsten Buchstaben:'},
                 {kind:'Grundschrift.Views.IntegerSlider', caption:'Erfolgreiche Versuche', min:5, max:60, step:5, name:'maxSessions', setting:'maxSessions', onChange:'setSetting'}
             ]}
@@ -52,6 +54,7 @@ enyo.kind({
         this.$.maxSessions.setValue(this.settings.maxSessions);
 
         this.$.allowedPlayTime.setValue(this.settings.allowedPlayTime);
+		this.$.maxTolerance.setValue(this.settings.maxTolerance);
     },
 
     setSetting:function (inSender) {
@@ -61,7 +64,10 @@ enyo.kind({
             this.settings[inSender.setting] = inSender.getValue();
         }
         localStorage['settings'] = enyo.json.stringify(this.settings);
-        this.bubble('onSettingsChanged');
+		enyo.asyncMethod(this, function() {
+			this.bubble('onSettingsChanged');
+		});
+
     }
 
 });

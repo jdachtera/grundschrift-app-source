@@ -46,7 +46,12 @@ enyo.kind({
         /**
          * The Settings view
          */
-        {kind: 'Grundschrift.Views.Admin.Settings', onBack: 'openMenu'}
+        {kind: 'Grundschrift.Views.Admin.Settings', onBack: 'openMenu'},
+
+		/**
+		 * The About view
+		 */
+		{kind: 'Grundschrift.Views.Admin.About', onBack: 'openMenu'}
 
     ],
 

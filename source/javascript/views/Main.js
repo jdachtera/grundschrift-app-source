@@ -21,7 +21,11 @@ enyo.kind({
         /**
          * Other variants of the current level
          */
-        variants:[]
+        variants:[],
+
+		successHistory: 0,
+
+		maxTolerance: 30
     },
 
     events:{
@@ -63,10 +67,29 @@ enyo.kind({
                 onFinished:'levelFinished',
                 onPlayStart:enyo.bubbler,
                 onPlayStop:enyo.bubbler
-            }
+            },
+			{
+				name: 'aidButton',
+				classes: 'aidButton',
+				ontap: 'toggleAid'
+			}
         ]}
 
     ],
+
+	settingsLoaded: function(inSender, inEvent) {
+		this.setMaxTolerance(inEvent.settings.maxTolerance);
+	},
+
+	toggleAid: function() {
+		this.setAid(!this.$.canvas.getAid());
+		this.successHistory = this.$.canvas.getAid() ? -3 : 0;
+	},
+
+	setAid: function(aid) {
+		this.$.canvas.setAid(aid);
+		this.$.aidButton.addRemoveClass('active', aid);
+	},
 
     setDrawmode:function (drawMode) {
         this.$.canvas.setDrawMode(drawMode);
@@ -104,6 +127,20 @@ enyo.kind({
      * @returns void
      */
     levelChanged:function () {
+		this.bubble('onAsyncOperationStarted', {callback: enyo.bind(this, function() {
+			// Show / hide the canvas to fix Android not displaying the canvas
+			this.$.canvas.hide();
+			enyo.asyncMethod(this, function() {
+				this.$.canvas.show();
+				this.$.canvas.resized();
+				if (this.sessionCount === 0) {
+					setTimeout(enyo.bind(this, 'startDemo'), 300);
+				}
+			})
+		})});
+
+		this.setAid(false);
+
         this.$.illustrations.destroyComponents();
         enyo.forEach(this.loadedIllustrations, function (illustration) {
             illustration.destroy();
@@ -123,6 +160,12 @@ enyo.kind({
                 }
             });
         }, this);
+
+		if (this.level.illustrations.length === 0) {
+			enyo.asyncMethod(this, function() {
+				this.bubble('onAsyncOperationFinished');
+			});
+		}
 
         this.$.canvas.setLevel(this.level);
 
@@ -149,7 +192,7 @@ enyo.kind({
         }, this);
         this.$.variants.createComponents(components, {owner:this});
         this.$.variants.render();
-        this.$.variants.applyStyle("width", this.variants.length * 48 + "px");
+        this.$.variants.applyStyle("width", this.variants.length * 64 + "px");
     },
 
     variantTap:function (inSender) {
@@ -168,9 +211,7 @@ enyo.kind({
         this.loadedIllustrations.push(inSender);
         if (this.loadedIllustrations.length === this.level.illustrations.length) {
             this.resizeIllustrations();
-            if (this.sessionCount === 0) {
-                setTimeout(enyo.bind(this, 'startDemo'), 300);
-            }
+			this.bubble('onAsyncOperationFinished');
         }
     },
 
@@ -234,12 +275,8 @@ enyo.kind({
      * @returns void
      */
     resetCanvas:function () {
-        var c = function (v) {
-            return 30 - (Math.floor(v / 5) + 1) * 2.5;
-        }
-
         var min = 20;
-        var s = c(this.sessionCount);
+        var s = this.maxTolerance - (Math.floor(this.sessionCount / 5) + 1) * 2.5;
         if (s < min) s = min;
 
         if (this.$.canvas.getSensitivity() != s) {
@@ -262,6 +299,14 @@ enyo.kind({
                 child:this.child,
                 success:inEvent.success
             });
+
+			this.successHistory += inEvent.success ? 1 : -1;
+			this.successHistory = this.successHistory < -3 ? -3 : (this.successHistory > 0 ? 0 : this.successHistory);
+			if (this.successHistory == -3) {
+				this.setAid(true);
+			} else if (this.successHistory >= 0){
+				this.setAid(false);
+			}
 
             session.setPaths(inEvent.paths);
 

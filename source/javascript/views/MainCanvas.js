@@ -16,10 +16,20 @@ enyo.kind({
         anchorPoints:[],
         finished:false,
         sensitivity:60,
+		aid: false,
+		aidStep: false,
         handOrientation:'right',
         child:'',
         drawMode:'advanced' //'simple'
     },
+
+	statics: {
+		easing: {
+			tenPercentQuadInOut: function() {
+
+			}
+		}
+	},
 
     events:{
         onFinished:'',
@@ -310,10 +320,12 @@ enyo.kind({
      * @returns void
      */
     startDemo:function () {
-        this.stopDemo();
+        //this.stopDemo();
+		this.$.demoAnimator.stop();
+		this.reset();
         this.inDemoMode = true;
-        this.$.demoAnimator.path = 0;
-        this.demoDoPath();
+        this.$.demoAnimator.path = -1;
+        this.demoDoBetweenPaths(this.$.demoAnimator);
     },
 
     /**
@@ -350,7 +362,12 @@ enyo.kind({
             }
 
             this.$.demoFinger.applyStyle('-webkit-transform-origin', origin);
-            this.$.demoFinger.applyStyle('-webkit-transform', 'rotate(' + ((this.canvas.width / 2 - point.x) / this.canvas.width / 2 * -35) + 'deg)');
+
+			var containerWidth = this.getComputedStyleValue('width', '0px').split('px')[0];
+
+			var rotate = ((containerWidth / 2 - point.x) / containerWidth / 2 * -90);
+
+			this.$.demoFinger.applyStyle('-webkit-transform', 'rotate(' + (rotate + (this.handOrientation == 'left' ? 25 : 0)) + 'deg)');
         }
         if (this.handOrientation === 'left') {
             left = this.position.x + point.x + fingerOffset.x - width;
@@ -404,38 +421,69 @@ enyo.kind({
      * @returns void
      */
     demoStepBetweenPaths:function (inSender, inEvent) {
-        var value = inEvent.originator.value,
-            startPoint = this.getResizedPoint(this.levelPaths[inSender.path - 1][this.levelPaths[inSender.path - 1].length - 1]),
-            direction = this.normalize(this.minus(
-                this.getResizedPoint(this.levelPaths[inSender.path][0]),
-                startPoint
-            ));
+        var value = inEvent.originator.value;
+		this.$.demoFinger.show();
+
+		var direction = this.normalize(this.minus(
+			this.getResizedPoint(this.levelPaths[inSender.path][0]),
+			this.$.demoAnimator.start
+		));
 
         var width = 2329 / 3 * this.backgroundScale;
         var height = 3246 / 3 * this.backgroundScale;
 
         var percentage = (value / inEvent.originator.endValue) * 100;
 
-        if (percentage <= 10) {
+        if (percentage <= 20) {
             width *= 1 + (percentage / 100);
             height *= 1+ (percentage / 100);
-        } else if (percentage > 10 && percentage < 90) {
-            width *= 1.1;
-            height *= 1.1;
-        } else if (percentage >= 90) {
+        } else if (percentage > 20 && percentage < 80) {
+            width *= 1.2;
+            height *= 1.2;
+        } else if (percentage >= 80) {
             width *= 1 + (1 - percentage / 100);
             height *= 1 + (1 - percentage / 100);
         }
 
         this.$.demoFinger.applyStyle('width', width + 'px');
         this.$.demoFinger.applyStyle('height', height + 'px');
-
-
-
-
-
-        this.moveFinger(this.plus(startPoint, this.multiply(direction, value)));
+        this.moveFinger(this.plus(this.$.demoAnimator.start, this.multiply(direction, value)));
     },
+
+	getDemoStepBetweenPathsStartPoint: function() {
+		var fingerOffset = fingerOffset = {
+			x:12 * this.backgroundScale,
+			y:12 * this.backgroundScale
+		};
+		var width = this.$.demoFinger.getComputedStyleValue('width', '0px').split('px')[0];
+
+		if (this.$.demoAnimator.path === 0) {
+			if (this.$.demoFinger.getShowing()) {
+				var start = {
+					x: parseInt(this.$.demoFinger.getComputedStyleValue('left', '0px').split('px')[0], 10),
+					y: parseInt(this.$.demoFinger.getComputedStyleValue('top', '0px').split('px')[0], 10)
+				};
+				if (this.handOrientation === 'left') {
+					start.x = width - this.position.x + start.x - fingerOffset.x;
+				} else {
+					start.x = start.x + fingerOffset.x - this.position.x;
+				}
+				start.y = start.y - this.position.y + fingerOffset.y;
+				return start;
+
+			} else {
+				return {
+
+					x: this.handOrientation === 'left' ?
+						- width + fingerOffset.x :
+						parseInt(this.getComputedStyleValue('width', '0px').split('px')[0], 10),
+					y: parseInt(this.getComputedStyleValue('height', '0px').split('px')[0], 10)
+				};
+			}
+		} else {
+			return this.getResizedPoint(this.levelPaths[this.$.demoAnimator.path - 1][this.levelPaths[this.$.demoAnimator.path - 1].length - 1]);
+		}
+	},
 
     /**
      * Moves the finger to the next path start
@@ -448,26 +496,26 @@ enyo.kind({
         this.$.demoAnimator.path++;
 
         if (inSender.path < this.levelPaths.length) {
+
+			var start = this.getDemoStepBetweenPathsStartPoint();
+
             var length = parseInt(this.getDistance(
-                this.getResizedPoint(this.levelPaths[inSender.path][0]),
-                this.getResizedPoint(this.levelPaths[inSender.path - 1][this.levelPaths[inSender.path - 1].length - 1])
+				start,
+                this.getResizedPoint(this.levelPaths[inSender.path][0])
             ), 10);
 
-            //enyo.asyncMethod(this, function () {
             setTimeout(enyo.bind(this, function () {
-
-
-                this.$.demoAnimator.play({
+				this.$.demoAnimator.play({
                     node:this.$.demoFinger.hasNode(),
+					easingFunc: enyo.easing.quadInOut,
+					start: start,
                     startValue:0,
-                    duration:length,
+                    duration: inSender.path == 0 ? length : length * 2,
                     endValue:length,
                     onStep:'demoStepBetweenPaths',
                     onEnd:'demoDoPath'
                 });
             }), 100);
-            //});
-
         }
     },
 
@@ -481,13 +529,13 @@ enyo.kind({
         if (this.$.demoAnimator.path < this.levelPaths.length) {
             this.paths.push([]);
             this.isDown = true;
-            this.$.demoFinger.show();
             var length = this.levelPaths[this.$.demoAnimator.path].length - 1;
 
             //enyo.asyncMethod(this, function () {
             setTimeout(enyo.bind(this, function () {
                 this.$.demoAnimator.play({
                     node:this.$.demoFinger.hasNode(),
+					easingFunc: enyo.easing.linear,
                     startValue:0,
                     lastPoint:0,
                     duration:this.getPathLength(this.levelPaths[this.$.demoAnimator.path]) * 3,
@@ -538,11 +586,17 @@ enyo.kind({
      */
     upHandler:function (inSender, inEvent) {
 
+
+
         if (this.inDemoMode || this.locked || inEvent.identifier !== this.pointerIdentifier) return true;
 
         this.pointerIdentifier = null;
 
         this.inherited(arguments);
+
+		if (this.paths[this.paths.length -1].length === 0) {
+			this.paths.length = this.paths.length -1;
+		}
 
         if (this.finished === false &&
             this.currentPath < this.normalizedLevelPaths.length &&
@@ -662,11 +716,16 @@ enyo.kind({
                             this.drawNewPathParts(increment);
                         }
                     }
-                } else {
-                    this.locked = true;
-                    // Save the unfinished data
-                    this.bubbleUnfinishedSession();
-                }
+                } else  {
+					if (!this.aid) {
+						this.locked = true;
+						// Save the unfinished data
+						this.bubbleUnfinishedSession();
+					} else if (this.currentPoint > 0) {
+						// Collect the data
+						this.paths[this.currentPath].push(position);
+					}
+				}
 
             }
             if (this.currentPath > this.levelPaths.length - 1 && this.finished === false) {

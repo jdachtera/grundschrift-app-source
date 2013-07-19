@@ -13,6 +13,7 @@ enyo.kind({
 
     published:{
         playStartTime:0,
+		asyncOperationsRunning: 0,
         allowedPlayTime:1
     },
 
@@ -20,7 +21,7 @@ enyo.kind({
 
     playTimeChecker:null,
 
-    asyncOperationsRunning:0,
+	loadingFinishedStack: [],
 
     handlers:{
         onAsyncOperationStarted:'asyncOperationStarted',
@@ -96,8 +97,10 @@ enyo.kind({
      *
      * @return void
      */
-    rendered:function () {
+    create:function () {
         this.inherited(arguments);
+
+		this.bubble('onAsyncOperationStarted');
 
         Grundschrift.Models.create(enyo.bind(this, function () {
             this.reloadChildren();
@@ -109,7 +112,11 @@ enyo.kind({
 
             document.body.className = bClasses.join(' ');
 
-            enyo.asyncMethod(this, 'openChildMenu');
+
+			enyo.asyncMethod(this, function() {
+				this.bubble('onAsyncOperationFinished');
+				this.loadingFinishedStack.push(enyo.bind(this, 'openChildMenu'));
+			})
 
         }));
     },
@@ -129,28 +136,48 @@ enyo.kind({
         window.close();
     },
 
+	asyncOperationsRunningChanged: function() {
+		this.log('Number of running async operations: ' + this.asyncOperationsRunning);
+
+		if (this.asyncOperationsRunning < 0) {
+
+		}
+		if (this.asyncOperationsRunning > 0) {
+			this.$.splash.show();
+		} else {
+			this.$.splash.hide();
+			enyo.forEach(this.loadingFinishedStack, function(callback) {
+				callback();
+			}, this);
+			this.loadingFinishedStack.length = 0;
+		}
+	},
+
 
     /**
      * Event handler for onAsyncOperationStarted
      * Displays a splash screen
      */
     asyncOperationStarted:function (inSender, inEvent) {
-        this.asyncOperationsRunning++;
-        if (inEvent.background != true) {
-            this.$.splash.show();
-        }
+		console.log('An async op started');
+		if (!inEvent.background) {
+			this.setAsyncOperationsRunning(this.asyncOperationsRunning + 1);
+			if (enyo.isFunction(inEvent.callback)) {
+				this.loadingFinishedStack.push(inEvent.callback);
+			}
+		}
+
     },
 
     /**
      * Event handler for onAsyncOperationFinished
      * Hides splash screen
      */
-    asyncOperationFinished:function () {
-        this.asyncOperationsRunning--;
-        if (this.asyncOperationsRunning <= 0) {
-            this.$.splash.hide();
-        }
-
+    asyncOperationFinished:function (inSender, inEvent) {
+		console.log('An async op finished');
+		if (!inEvent.background) {
+			this.setAsyncOperationsRunning(this.asyncOperationsRunning - 1);
+		}
     },
 
     /**
@@ -164,7 +191,8 @@ enyo.kind({
             drawMode:'simple',
             allowedPlayTime:20,
             levelSortMode:'sortByClassName',
-            maxSessions:5
+            maxSessions: 25,
+			maxTolerance: 30
         };
 
         enyo.mixin(settings, enyo.json.parse(localStorage.settings || '{}'));
@@ -187,12 +215,13 @@ enyo.kind({
      * Reloads children from the database
      */
     reloadChildren:function (inSender, inEvent) {
-        this.asyncOperationStarted(this, inEvent || {});
+		inEvent = inEvent || {};
+		this.bubble('onAsyncOperationStarted', {background: !!inEvent.background});
 
         Grundschrift.Models.ready(this, function () {
             Grundschrift.Models.Child.all().list(enyo.bind(this, function (children) {
                 this.waterfall('onChildrenLoaded', children);
-                this.bubble('onAsyncOperationFinished');
+                this.bubble('onAsyncOperationFinished', {background: !!inEvent.background});
             }));
         });
     },
@@ -202,7 +231,8 @@ enyo.kind({
      * Reloads the current childs sessions from the database
      */
     reloadSessions:function (inSender, inEvent) {
-        this.asyncOperationStarted(this, inEvent || {});
+		inEvent = inEvent || {};
+		this.bubble('onAsyncOperationStarted', {background: !!inEvent.background});
 
         Grundschrift.Models.ready(this, function () {
             this.selectedChild.sessions.selectJSON(
@@ -213,7 +243,7 @@ enyo.kind({
                         });
 
                         this.waterfall('onSessionsLoaded', sessions);
-                        this.bubble('onAsyncOperationFinished');
+                        this.bubble('onAsyncOperationFinished', {background: !!inEvent.background});
                     }
                 ));
         });
@@ -224,7 +254,8 @@ enyo.kind({
      * Reloads the Levels from the database
      */
     reloadLevels:function (inSender, inEvent) {
-        this.asyncOperationStarted(this, inEvent || {});
+		inEvent = inEvent || {};
+		this.bubble('onAsyncOperationStarted', {background: !!inEvent.background});
 
         Grundschrift.Models.Level.all().list(enyo.bind(this, function (levels) {
             if (enyo.isFunction(Grundschrift.Models.Level[Grundschrift.Models.Level.sortMode])) {
@@ -232,7 +263,7 @@ enyo.kind({
             }
 
             this.waterfall('onLevelsLoaded', levels);
-            this.bubble('onAsyncOperationFinished');
+            this.bubble('onAsyncOperationFinished', {background: !!inEvent.background});
         }));
     },
 

@@ -52,7 +52,7 @@ enyo.kind({
 
         var value = this.value > this.max ? this.max : this.value;
 
-        this.$.wrapper.applyStyle('width', this.max * this.max / 5 * singleWidth + 'px');
+        this.$.wrapper.applyStyle('width', this.max * singleWidth + 'px');
 
         this.$.enabled.applyStyle('width', value * singleWidth + 'px');
         this.$.disabled.applyStyle('width', (this.max - value) * singleWidth + 'px');

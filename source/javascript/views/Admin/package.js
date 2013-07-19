@@ -1,4 +1,5 @@
 enyo.depends(
+	'About.js',
     'EditChild.js',
     'EditChildren.js',
     'EditLevels.js',

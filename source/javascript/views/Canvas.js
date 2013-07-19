@@ -145,8 +145,15 @@ enyo.kind({
      */
     drawBackground:function () {
         this.clear();
+		this.canvas.trigger
         this.context.globalCompositeOperation = 'source-over';
         this.context.drawImage(this.image, this.backgroundOffsetX, this.backgroundOffsetY, this.backgroundWidth, this.backgroundHeight);
+
+		enyo.asyncMethod(this, function() {
+			var evt = document.createEvent("HTMLEvents");
+			evt.initEvent('click', true, true); // event type,bubbling,cancelable
+			this.canvas.dispatchEvent(evt);
+		});
     },
 
     /**
@@ -173,9 +180,10 @@ enyo.kind({
         this.paths.push([]);
         this.isDown = true;
         this.addPointToPath(inEvent);
+		/*
         if (this.paths.length > 0 && this.paths[this.paths.length - 1].length === 0) {
             this.paths.length = this.paths.length - 1;
-        }
+        }*/
     },
 
     /**

@@ -74,10 +74,10 @@ Grundschrift.Models.create = function (cb) {
  * @param callback
  */
 Grundschrift.Models.ready = function (context, callback) {
-    var func = enyo.bind(context, callback);
     if (this.init === true) {
-        func();
+        enyo.asyncMethod(context, callback);
     } else {
+		var func = enyo.bind(context, callback);
         this.stack.push(func);
     }
 };

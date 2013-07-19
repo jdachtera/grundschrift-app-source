@@ -279,7 +279,7 @@ enyo.kind({
      * @returns void
      */
     sessionsChanged:function () {
-        this.bubble('onAsyncOperationStart');
+        this.bubble('onAsyncOperationStarted');
         enyo.asyncMethod(this, function () {
             var nameMap = {};
 
@@ -292,9 +292,10 @@ enyo.kind({
                     this.sessionCount[s.level.id]++;
                 }
             }, this);
+
             this.setRememberMeShowing();
             this.$.levelGrid.update();
-            this.bubble('onAsyncOperationFinished');
+			this.bubble('onAsyncOperationFinished');
         });
     },
 

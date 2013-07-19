@@ -1,6 +1,19 @@
 @import "variables";
 
 .main {
+  .aidButton {
+    background-image: url('@{assets-url}/icons/first_aid.jpg');
+    background-size: contain;
+    height: 64px;
+    width: 64px;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    opacity: 0.5;
+    &.active {
+      opacity: 1;
+    }
+  }
   -webkit-user-select: none;
   .sessionStars {
     text-align: center;
@@ -42,13 +55,15 @@
       }
     }
     padding-top: 10pt;
-    .illustration { //width:80%;
+    .illustration { //width:80%;c
+      font-family: Grundschrift, "Comic Sans MS";
       margin-right: @marginWidth * 2;
       margin-bottom: @marginWidth;
       border-style: solid;
       -webkit-border-image: url("@{assets-url}/images/illustrationBorder.png") 10 10 10 10 stretch stretch;
       border-width: 5px 5px 5px 0px;
       font-size: 0;
+      font-weight: bold;
       img {
         width: 100%;
         background: #FFF;
@@ -71,6 +86,11 @@
   }
   &.leftHand {
 
+    .aidButton {
+      right: auto;
+      left: 10px;
+    }
+
     .sideBarContent .illustration {
       text-align: right;
       -webkit-border-image: url("@{assets-url}/images/illustrationBorder_left.png") 10 10 10 10 stretch stretch;
@@ -81,5 +101,29 @@
   }
   img.demoFinger {
     position: absolute;
+  }
+}
+
+div.sideBarContent {
+  &.orange .illustration .caption span.levelPart {
+    color: @orange;
+  }
+  &.red .illustration .caption span.levelPart {
+    color: @red;
+  }
+  &.green .illustration .caption span.levelPart {
+    color: @green;
+  }
+  &.blue .illustration .caption span.levelPart {
+    color: @blue;
+  }
+  &.violet .illustration .caption span.levelPart {
+    color: @violet;
+  }
+  &.darkblue .illustration .caption span.levelPart {
+    color: @darkblue;
+  }
+  &.none .illustration .caption span.levelPart {
+    color: @gridItemBackground;
   }
 }

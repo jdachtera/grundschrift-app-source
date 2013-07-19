@@ -5,6 +5,7 @@ enyo.depends(
     'Session.js',
     'Level.js',
     'Child.js',
+	'Group.js',
     'Sound.js',
     'SoundManager.js'
 );
