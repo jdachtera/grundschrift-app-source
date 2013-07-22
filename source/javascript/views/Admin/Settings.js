@@ -2,6 +2,8 @@ enyo.kind({
     kind:'Control',
     name:'Grundschrift.Views.Admin.Settings',
 
+	lastUpdateRequest: null,
+
     components:[
         {kind:'FittableRows', style:'width:100%;', components:[
             {kind:'onyx.Toolbar', style:'height:80px', components:[
@@ -64,9 +66,15 @@ enyo.kind({
             this.settings[inSender.setting] = inSender.getValue();
         }
         localStorage['settings'] = enyo.json.stringify(this.settings);
-		enyo.asyncMethod(this, function() {
+
+		if (this.lastUpdateRequest) {
+			clearTimeout(this.lastUpdateRequest);
+		}
+
+		this.lastUpdateRequest = setTimeout(enyo.bind(this, function() {
 			this.bubble('onSettingsChanged');
-		});
+			this.lastUpdateRequest = null
+		}), 200);
 
     }
 

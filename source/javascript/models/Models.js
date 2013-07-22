@@ -35,7 +35,7 @@ Grundschrift.Models.create = function (cb) {
         dbName = 'ext:Grundschrift';
     }
 
-    persistence.debug = false;
+    persistence.debug = true;
     persistence.store.websql.config(persistence, dbName, 'Grundschrift', 5 * 1024 * 1024);
 
     document.addEventListener("online", enyo.bind(this, 'onOnline'), false);
@@ -87,7 +87,7 @@ Grundschrift.Models.ready = function (context, callback) {
  */
 Grundschrift.Models.clearStack = function () {
     enyo.forEach(this.stack, function (cb) {
-        cb();
+        enyo.asyncMethod(this, cb);
     });
     this.stack.length = 0;
 };

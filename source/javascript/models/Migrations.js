@@ -52,14 +52,5 @@ Grundschrift.Models.Migrations = [
         down:function () {
 
         }
-    }],
-	[3, {
-		up: function() {
-			this.action(enyo.bind(this, function (tx, nextCommand) {
-				tx.executeSql('ALTER TABLE Child ADD leftHand BOOL', [], enyo.bind(this, function () {
-					nextCommand();
-				}));
-			})
-		}
-	}]
+    }]
 ];
