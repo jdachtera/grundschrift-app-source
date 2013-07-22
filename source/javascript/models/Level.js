@@ -1,17 +1,27 @@
-Grundschrift.Models.Level = persistence.define('Level', {
-    name:'TEXT',
-    category:'TEXT',
-    className:'TEXT',
-    unlockCondition:'TEXT',
-    illustrations:'JSON',
-    lineWidth:'INT',
-    paths:'JSONC'
+$data.Entity.extend('Grundschrift.Models.Level', {
+	id: {
+		type: 'int',
+		key: true,
+		computed: true
+	},
+	category: {
+		type: String
+	},
+	className: {
+		type: String
+	},
+	unlockCondition: {
+		type: String
+	},
+	lineWidth: {
+		type: 'int'
+	},
+	paths: {
+		type: String
+	}
 });
 
 Grundschrift.Models.Level.pathColumns = ['x', 'y', 'isAnchor'];
-
-Grundschrift.Models.Level.hasMany('sessions', Grundschrift.Models.Session, 'level');
-Grundschrift.Models.Level.enableSync(Grundschrift.Models.syncServer + '/levelChanges');
 
 
 /**
@@ -71,7 +81,7 @@ Grundschrift.Models.Level.sortByClassName = function (a, b) {
 Grundschrift.Models.Level.sortByName = function (a, b) {
     return a.category == b.category ?
         (a.name > b.name ? 1 : -1) : (a.category > b.category ? 1 : -1);
-}
+};
 
 
 /**
@@ -89,62 +99,9 @@ Grundschrift.Models.Level.prototype.getPaths = function () {
  */
 Grundschrift.Models.Level.prototype.setPaths = function (paths) {
     this.paths = paths
-    this.markDirty('paths');
     return this;
 };
 
-
-/**
- * Preload all level images and illustrations
- * @param callBack
- */
-Grundschrift.Models.Level.preloadLevelImages = function (callBack) {
-    var replace = function (string, exchanges) {
-        enyo.forEach(exchanges, function (e) {
-            string = string.split(e[0]).join(e[1]);
-        });
-        return string;
-    };
-
-    var images = [];
-    this.all().list(function (levels) {
-        enyo.forEach(levels, function (level) {
-            enyo.forEach(level.illustrations, function (illustration) {
-                var macros = {illustrationFilename:illustration};
-
-                macros.illustrationFilename = replace(macros.illustrationFilename, [
-                    ['ö', 'oe'],
-                    ['ü', 'ue'],
-                    ['ä', 'ae'],
-                    ['ß', 'sz']
-                ]);
-
-                enyo.mixin(macros, level);
-
-                images.push(enyo.macroize('assets/illustrationen/{$illustrationFilename}.png', macros));
-            }, this);
-            images.push(enyo.macroize('assets/levels/{$category}/{$name}/background.png', level));
-            images.push(enyo.macroize('assets/levels/{$category}/{$name}/thumbnail.png', level));
-        }, this);
-
-        var imgLength = images.length;
-
-        enyo.forEach(images, function (image) {
-            var img = new Image();
-            img.onload = function () {
-                imgLength--;
-                if (imgLength === 0) {
-                    if (callBack) callBack();
-                }
-            };
-            img.onerror = function () {
-                console.log('Error loading image ' + img.src);
-                img.onload();
-            };
-            img.src = image;
-        }, this);
-    });
-};
 
 /**
  * Reloads only changed levels into the database. Is used to handle Application updates.

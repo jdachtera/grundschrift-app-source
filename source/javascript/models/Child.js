@@ -1,8 +1,20 @@
-Grundschrift.Models.Child = persistence.define('Child', {
-    name:'TEXT',
-    password:'JSON',
-    imageUrl:'TEXT',
-    leftHand:'BOOL'
+$data.Entity.extend('Grundschrift.Models.User', {
+	id: {
+		type: 'int',
+		key: true,
+		computed: true
+	},
+	name: {
+		type: String,
+		required: true,
+	},
+	password: {
+		type: Array,
+		elementType: 'int'
+	},
+	leftHand: {
+		type: Boolean
+	}
 });
-Grundschrift.Models.Child.hasMany('sessions', Grundschrift.Models.Session, 'child');
-Grundschrift.Models.Child.enableSync(Grundschrift.Models.syncServer + '/childChanges');
+
+

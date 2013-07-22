@@ -1,9 +1,23 @@
-Grundschrift.Models.Session = persistence.define('Session', {
-    paths:'JSONC',
-    success:'BOOL'
+$data.Entity.extend('Grundschrift.Models.Session', {
+	id: {
+		type: 'int',
+		key: true,
+		computed: true
+	},
+	paths: {
+		type: String
+	},
+	success: {
+		type: Boolean
+	},
+	level: {
+		type: Grundschrift.Models.Level
+	},
+	child: {
+		type: Grundschrift.Models.Child
+	}
 });
 
-Grundschrift.Models.Session.enableSync(Grundschrift.Models.syncServer + '/sessionChanges');
 
 /**
  * Get the paths of a session.
