@@ -1,11 +1,13 @@
 enyo.kind({
     name:"Grundschrift.Views.Admin.Statistics",
-    kind:"FittableColumns",
+	kind: 'Grundschrift.Views.Admin.BaseView',
+    layoutKind:"FittableColumnsLayout",
     classes:"statistics",
 
     published:{
         child:"",
         session:"",
+		levels: [],
         sessionIndex:0,
         showOnlySuccessFul:false
     },
@@ -21,6 +23,7 @@ enyo.kind({
 
     category:"",
     sessions:[],
+
     sessionTree:{},
     style:"height:100%",
 
@@ -47,20 +50,30 @@ enyo.kind({
 
     ],
 
+	levelsLoaded: function(inSender, levels) {
+
+		this.levelsMap = {};
+		enyo.forEach(levels, function(level) {
+			this.levelsMap[level.id] = level;
+		}, this);
+	},
+
     sessionsLoaded:function (inSender, sessions) {
         this.sessionTree = {};
+
         enyo.forEach(sessions, function (session) {
-            if (typeof this.sessionTree[session.level.category] === "undefined") {
-                this.sessionTree[session.level.category] = {};
+			var level = this.levelsMap[session.levelId];
+            if (typeof this.sessionTree[level.category] === "undefined") {
+                this.sessionTree[level.category] = {};
             }
 
-            var category = this.sessionTree[session.level.category];
+            var category = this.sessionTree[level.category];
 
-            if (!(category[session.level.name])) {
-                category[session.level.name] = {successful:[], unsuccessful:[]};
+            if (!(category[level.name])) {
+                category[level.name] = {successful:[], unsuccessful:[]};
             }
 
-            category[session.level.name][session.success ? 'successful' : 'unsuccessful'].push(session);
+            category[level.name][session.success ? 'successful' : 'unsuccessful'].push(session);
 
         }, this);
 
@@ -104,9 +117,11 @@ enyo.kind({
 
         if (this.sessions.length) {
 
-            Grundschrift.Models.Session.load(this.sessions[this.sessionIndex].id, enyo.bind(this, function (session) {
-                this.setSession(session);
-            }));
+            Grundschrift.Models.db.Sessions
+				.filter('id', '==', this.sessions[this.sessionIndex].id)
+				.toArray(enyo.bind(this, function (items) {
+                	this.setSession(items[0]);
+            	}));
 
         }
     },
@@ -116,9 +131,11 @@ enyo.kind({
 
         if (this.session) {
 
-            this.$.graph.setLevel(this.session.level);
+            this.$.graph.setLevel(this.levelsMap[this.session.levelId]);
             this.$.graph.drawBackground();
-            this.$.graph.setPaths(this.session.getPaths());
+			this.session.getPaths(this, function(paths) {
+				this.$.graph.setPaths(paths);
+			});
         } else {
             this.$.graph.clear();
         }

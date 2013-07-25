@@ -5,6 +5,16 @@
   height: 100%;
   -webkit-user-select: none;
   .gridList {
+    .groupHeader {
+      font-size: 24px;
+      font-weight: bold;
+      background: #fffafa;
+      margin-top: 16px;
+      margin-left: 16px;
+      padding: 10px;
+      border-radius: 5px;
+      margin-right: 3px;
+    }
     margin-right: @marginWidth;
     margin-bottom: @marginWidth;
     .gridItem { //.bordered;
@@ -25,9 +35,10 @@
         padding: @marginWidth 0;
         .name {
           padding: 0 4px;
+          text-transform: uppercase;
           display: inline-block;
           .rounded(5px);
-          background-color: #fffafa;
+          //background-color: #fffafa;
         }
 
       }

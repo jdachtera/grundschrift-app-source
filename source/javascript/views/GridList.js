@@ -9,7 +9,9 @@ enyo.kind({
     published:{
         minItemWidth:200,
         count:0,
-        noGrid:false
+        noGrid:false,
+		lastGroupId: '',
+		groupFunc: function() {},
     },
 
     events:{
@@ -41,6 +43,7 @@ enyo.kind({
         ];
 
         this.itemComponents = [
+			{name: 'groupHeader', classes: 'groupHeader'},
             {kind:'Control', name:'container', classes:'gridItemContainer', components:components}
         ];
         this.components = [];
@@ -88,6 +91,7 @@ enyo.kind({
      * @returns void
      */
     refresh:function (count) {
+		this.lastGroupId = '';
         if (count) {
             this.setCount(count);
         }
@@ -120,7 +124,11 @@ enyo.kind({
      * @returns void
      */
     setupItem:function (inSender, inEvent) {
-        inEvent.item.$.container.applyStyle('width', this.itemWidth);
+		var group = this.groupFunc(inEvent.index) || {id: '', name: 'Keine Gruppe zugewiesen'};
+		inEvent.item.$.groupHeader.setContent(group.name);
+		inEvent.item.$.groupHeader.setCanGenerate(group.id !== this.lastGroupId);
+		this.lastGroupId = group.id;
+		inEvent.item.$.container.applyStyle('width', this.itemWidth);
         this.bubble('onSetupItem', inEvent);
     },
 
@@ -167,7 +175,7 @@ enyo.kind({
                 this.itemWidth = Math.floor((bounds.width - 1) / itemCount) + 'px';
             }
             for (i = 0; i < this.$.repeater.children.length; i++) {
-                id = this.$.repeater.children[i].children[0].id;
+                id = this.$.repeater.children[i].$.container.id;
                 node = enyo.dom.byId(id);
                 if (node) {
                     node.style.width = this.itemWidth;

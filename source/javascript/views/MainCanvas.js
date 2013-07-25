@@ -99,7 +99,6 @@ enyo.kind({
     },
 
     levelChanged:function () {
-
         this.inherited(arguments);
 
         this.levelPaths.length = 0;
@@ -111,29 +110,30 @@ enyo.kind({
             this.drawConf.lineWidth = this.level.lineWidth;
             this.finishedConf.lineWidth = this.level.lineWidth;
 
+			this.bubble('onAsyncOperationStarted');
 
-            var levelPaths = this.level.getPaths();
+            this.level.getPaths(this, function(levelPaths) {
+				this.levelPaths.length = 0;
+				this.anchorPoints.length = 0;
+				this.normalizedLevelPaths.length = 0;
 
-            enyo.forEach(levelPaths, function (path, pathIndex) {
-                this.levelPaths.push(this.getNormalizedPath(path, 10 / this.backgroundScale, true));
-            }, this);
+				enyo.forEach(levelPaths, function (path, pathIndex) {
+					this.levelPaths.push(this.getNormalizedPath(path, 10 / this.backgroundScale, true));
+				}, this);
 
-
-            /*enyo.forEach(levelPaths, function (path, pathIndex) {
-                this.levelPaths.push(path);
-            }, this);*/
-
-
-
-            enyo.forEach(this.levelPaths, function (p) {
-                this.normalizedLevelPaths.push(this.getNormalizedPath(p, this.sensitivity / this.backgroundScale));
-            }, this);
+				enyo.forEach(this.levelPaths, function (p) {
+					this.normalizedLevelPaths.push(this.getNormalizedPath(p, this.sensitivity / this.backgroundScale));
+				}, this);
 
 
-            this.anchorPoints = this.getAnchorPoints();
+				this.anchorPoints = this.getAnchorPoints();
+				this.bubble('onAsyncOperationFinished');
+			});
 
-        }
-        this.reset();
+        } else {
+			this.reset();
+		}
+
 
 
     },

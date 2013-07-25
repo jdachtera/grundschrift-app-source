@@ -37,7 +37,7 @@ enyo.kind({
      * @returns void
      */
     imageChanged:function () {
-        this.$.image.setSrc(this.image);
+        this.$.image.setSrc(this.image || 'assets/images/rememberMeBackside.png');
     },
 
     /**

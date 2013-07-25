@@ -32,6 +32,7 @@ enyo.kind({
         onChildSelected:'childSelected',
 
         onChildrenChanged:'reloadChildren',
+		onGroupsChanged:'reloadGroups',
         onSessionsChanged:'reloadSessions',
         onSettingsChanged:'reloadSettings',
         onLevelsChanged:'reloadLevels'
@@ -43,10 +44,13 @@ enyo.kind({
         onSettingsLoaded:'',
         onChildrenLoaded:'',
         onSessionsLoaded:'',
-        onLevelsLoaded:''
+        onLevelsLoaded:'',
+		onBackButton: ''
     },
 
     components:[
+		{kind: "enyo.Signals", onbackbutton: "handleBack"},
+
         {kind: 'Grundschrift.Views.Splash'},
 
         {kind: 'Grundschrift.Views.RememberMe.Game',
@@ -102,24 +106,35 @@ enyo.kind({
 
 		this.bubble('onAsyncOperationStarted');
 
-        Grundschrift.Models.create(enyo.bind(this, function () {
+        Grundschrift.Models.create(this, function () {
             this.reloadChildren();
             this.reloadLevels();
             this.reloadSettings();
+			this.reloadGroups();
 
             var bClasses = document.body.className.split(' ');
             bClasses.splice(enyo.indexOf('loading', bClasses), 1)
-
             document.body.className = bClasses.join(' ');
-
 
 			enyo.asyncMethod(this, function() {
 				this.bubble('onAsyncOperationFinished');
 				this.loadingFinishedStack.push(enyo.bind(this, 'openChildMenu'));
-			})
+			});
 
-        }));
+        });
+
+		document.addEventListener("backbutton", enyo.bind(this, function(inEvent){
+			inEvent.preventDefault();
+			inEvent.stopPropagation();
+			this.handleBack();
+		}), false);
     },
+
+	handleBack: function() {
+		var pane = this.getControls()[this.pane];
+		this.waterfall('onBackButton', {pane: pane})
+	},
+
 
 
     /**
@@ -139,9 +154,6 @@ enyo.kind({
 	asyncOperationsRunningChanged: function() {
 		this.log('Number of running async operations: ' + this.asyncOperationsRunning);
 
-		if (this.asyncOperationsRunning < 0) {
-
-		}
 		if (this.asyncOperationsRunning > 0) {
 			this.$.splash.show();
 		} else {
@@ -190,7 +202,7 @@ enyo.kind({
             password:'',
             drawMode:'simple',
             allowedPlayTime:20,
-            levelSortMode:'sortByClassName',
+            levelSortMode:'sortByName',
             maxSessions: 25,
 			maxTolerance: 30
         };
@@ -203,7 +215,6 @@ enyo.kind({
             Grundschrift.Models.Level.sortMode = settings.levelSortMode;
             this.bubble('onLevelsChanged');
         }
-
 
         this.waterfall('onSettingsLoaded', {
             settings:settings
@@ -219,12 +230,34 @@ enyo.kind({
 		this.bubble('onAsyncOperationStarted', {background: !!inEvent.background});
 
         Grundschrift.Models.ready(this, function () {
-            Grundschrift.Models.Child.all().list(enyo.bind(this, function (children) {
+			console.log('models ready');
+            Grundschrift.Models.db.Users.toArray(enyo.bind(this, function (children) {
+
                 this.waterfall('onChildrenLoaded', children);
                 this.bubble('onAsyncOperationFinished', {background: !!inEvent.background});
             }));
         });
     },
+
+
+	/**
+	 * Event handler for onChildrenChanged
+	 * Reloads children from the database
+	 */
+	reloadGroups:function (inSender, inEvent) {
+		inEvent = inEvent || {};
+		this.bubble('onAsyncOperationStarted', {background: !!inEvent.background});
+
+		Grundschrift.Models.ready(this, function () {
+			Grundschrift.Models.db.Groups.toArray(enyo.bind(this, function (groups) {
+				groups.sort(function(a, b) {
+					return a.name > b.name;
+				});
+				this.waterfall('onGroupsLoaded', groups);
+				this.bubble('onAsyncOperationFinished', {background: !!inEvent.background});
+			}));
+		});
+	},
 
     /**
      * Event handler for onSessionsChanged
@@ -232,21 +265,25 @@ enyo.kind({
      */
     reloadSessions:function (inSender, inEvent) {
 		inEvent = inEvent || {};
-		this.bubble('onAsyncOperationStarted', {background: !!inEvent.background});
 
-        Grundschrift.Models.ready(this, function () {
-            this.selectedChild.sessions.selectJSON(
-                ['id', 'success', 'level.id', 'level.name', 'level.category'],
-                enyo.bind(this, function (sessions) {
-                        sessions.sort(function (a, b) {
-                            return a.level.name - b.level.name;
-                        });
 
-                        this.waterfall('onSessionsLoaded', sessions);
-                        this.bubble('onAsyncOperationFinished', {background: !!inEvent.background});
-                    }
-                ));
-        });
+		if (this.selectedChild) {
+			this.bubble('onAsyncOperationStarted', {background: !!inEvent.background});
+			Grundschrift.Models.ready(this, function () {
+				Grundschrift.Models.db.Sessions.filter(function(session) {
+					return session.userId == this.child.id;
+				}, {
+					child: this.selectedChild
+				}).toArray(enyo.bind(this, function(sessions) {
+						this.waterfall('onSessionsLoaded', sessions);
+						this.bubble('onAsyncOperationFinished', {background: !!inEvent.background});
+					}));
+			});
+		} else {
+			this.waterfall('onSessionsLoaded', []);
+		}
+
+
     },
 
     /**
@@ -257,7 +294,7 @@ enyo.kind({
 		inEvent = inEvent || {};
 		this.bubble('onAsyncOperationStarted', {background: !!inEvent.background});
 
-        Grundschrift.Models.Level.all().list(enyo.bind(this, function (levels) {
+        Grundschrift.Models.db.Levels.toArray(enyo.bind(this, function (levels) {
             if (enyo.isFunction(Grundschrift.Models.Level[Grundschrift.Models.Level.sortMode])) {
                 levels.sort(Grundschrift.Models.Level[Grundschrift.Models.Level.sortMode]);
             }

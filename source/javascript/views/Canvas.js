@@ -133,8 +133,14 @@ enyo.kind({
     levelChanged:function () {
         if (this.level.name) {
             var path = enyo.macroize('assets/levels/{$category}/{$name}/background.png', this.level);
-            this.image.src = path;
+			// Resolve absolute image url first to avoid a loading / resized loop
+			var img = document.createElement('img');
+			img.src = path;
+			if (img.src !== this.image.src) {
+				this.image.src = img.src;
+			}
         }
+
         this.reset();
     },
 
@@ -148,12 +154,6 @@ enyo.kind({
 		this.canvas.trigger
         this.context.globalCompositeOperation = 'source-over';
         this.context.drawImage(this.image, this.backgroundOffsetX, this.backgroundOffsetY, this.backgroundWidth, this.backgroundHeight);
-
-		enyo.asyncMethod(this, function() {
-			var evt = document.createEvent("HTMLEvents");
-			evt.initEvent('click', true, true); // event type,bubbling,cancelable
-			this.canvas.dispatchEvent(evt);
-		});
     },
 
     /**

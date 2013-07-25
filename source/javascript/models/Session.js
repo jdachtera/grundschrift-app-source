@@ -1,42 +1,77 @@
-Grundschrift.Models.Session = persistence.define('Session', {
-    paths:'JSONC',
-    success:'BOOL'
+$data.Entity.extend('Grundschrift.Models.Session', {
+	id: {
+		type: $data.Guid,
+		key: true,
+		computed: true
+	},
+	pathsId: {
+		type: String,
+	},
+	pathsLength: {
+		type: 'int'
+	},
+	success: {
+		type: Boolean
+	},
+	levelId: {
+		type: String
+	},
+	userId : {
+		type: String
+	}
 });
 
-Grundschrift.Models.Session.enableSync(Grundschrift.Models.syncServer + '/sessionChanges');
 
 /**
- * Get the paths of a session.
- * Automatically decompresses the json
- * @param paths
- * @return {*}
+ * Get the sessions paths
+ * @return {String}
  */
-Grundschrift.Models.Session.prototype.getPaths = function () {
-    var paths = [];
-    enyo.forEach(this.paths, function (path) {
-        paths.push(Grundschrift.Models.deCompressJson(
-            path, Grundschrift.Models.Session.pathColumns
-        ));
-    });
-    return paths;
+Grundschrift.Models.Session.prototype.getPaths = function (context, callback) {
+	if (this.pathsId) {
+		Grundschrift.Models.ZippedJson.find(this.pathsId, context, callback);
+	} else {
+		enyo.asyncMethod(context, callback, []);
+	}
 };
 
-Grundschrift.Models.Session.pathColumns = ['x', 'y', 'timestamp'];
-
 /**
- * Set the paths of a session.
- * Automatically compresses the json
+ * Set the sessions paths
  * @param paths
  * @return {*}
  */
-Grundschrift.Models.Session.prototype.setPaths = function (paths) {
-    this.paths = [];
-    enyo.forEach(paths, function (path) {
-        this.paths.push(Grundschrift.Models.compressJson(
-            path, Grundschrift.Models.Session.pathColumns
-        ));
-    }, this);
+Grundschrift.Models.Session.prototype.setPaths = function(paths, context, callback) {
+	paths = paths || [];
+	this.pathsLength = paths.length
+	if (this.pathsId) {
+		Grundschrift.Models.ZippedJson.update(this.pathsId, paths, context, callback);
+	} else {
+		Grundschrift.Models.ZippedJson.create(paths, this, function(z) {
+			this.pathsId = z.id;
+			enyo.asyncMethod(context, callback);
+		});
+	}
+	return this;
+};
 
-    this.markDirty('paths');
-    return this;
+Grundschrift.Models.Session.export = function(context, callback) {
+	var data = [];
+	Grundschrift.Models.db.Sessions.toArray(function(sessions) {
+		function next() {
+			if (sessions.length) {
+				var session = sessions.shift();
+				session.getPaths(this, function(paths) {
+					data.push({
+						success: session.success,
+						levelId: session.levelId,
+						userId: session.userId,
+						paths: paths
+					});
+					next();
+				});
+			} else {
+				enyo.asyncMethod(context, callback, data);
+			}
+		}
+		next();
+	});
 };

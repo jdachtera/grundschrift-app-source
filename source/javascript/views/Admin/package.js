@@ -1,6 +1,8 @@
 enyo.depends(
+	'BaseView.js',
 	'About.js',
     'EditChild.js',
+	'EditGroups.js',
     'EditChildren.js',
     'EditLevels.js',
     'EditCanvas.js',

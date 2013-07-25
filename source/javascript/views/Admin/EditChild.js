@@ -1,13 +1,15 @@
 enyo.kind({
     name:'Grundschrift.Views.Admin.EditChild',
-    kind:'FittableRows',
+    kind:'Grundschrift.Views.Admin.BaseView',
     fit: true,
     classes:'editChild',
     published:{
         /**
          * The child to edit
          */
-        child:-1
+        child:-1,
+
+		groups: []
     },
     image:'',
     password:[],
@@ -19,6 +21,9 @@ enyo.kind({
         onOpenStatistics:'',
         onBack: ''
     },
+	handlers: {
+		onGroupsLoaded: 'groupsLoaded'
+	},
     components:[
         {kind:'onyx.Toolbar', style:'height:80px', components:[
             {kind:'ImageButton', type:'Exit', ontap:'doBack'},
@@ -40,6 +45,17 @@ enyo.kind({
                     {content:'Bild:'},
                     {kind:'Grundschrift.Views.CroppedImage', ontap:'childImageTap', style:'width:150pt;height:80pt;border:2px white solid;'}
                 ]},
+				{kind: 'onyx.InputDecorator', components:[
+					{content:'Gruppe:'},
+					{kind: "onyx.PickerDecorator", components: [
+						{},
+						{
+							name: "groupPicker",
+							kind: "onyx.Picker",
+							onChange: 'changeGroup'
+						}
+					]}
+				]},
                 {kind: 'onyx.InputDecorator', components:[
                     {content:'Password:'},
                     {kind:'FittableColumns', classes:'password', components:[
@@ -77,21 +93,59 @@ enyo.kind({
 
     ],
 
-    /**
+
+	groupsLoaded: function(inSender, inGroups) {
+		this.setGroups(inGroups);
+	},
+
+	groupsChanged: function() {
+		this.$.groupPicker.destroyClientControls();
+
+		var groupId = '';
+
+		if (this.child) {
+			var childGroup = enyo.filter(this.groups, function(group) {
+				return group.id == this.child.groupId;
+			}, this)[0];
+			if (childGroup) {
+				groupId = childGroup.id;
+			}
+		}
+
+		this.$.groupPicker.createComponent({content: 'Keine Gruppe', groupId: '', active: groupId == ''}, {owner: this});
+
+		enyo.forEach(this.groups, function(group, i) {
+			this.$.groupPicker.createComponent({content: group.name, groupId: group.id, active: groupId == group.id}, {owner: this});
+		}, this);
+
+		this.$.groupPicker.render();
+	},
+
+	changeGroup: function(inSender, inEvent) {
+		if (this.child) {
+			this.child.groupId = inEvent.selected.groupId;
+		}
+	},
+
+
+	/**
      * Fills the form with the childs properties
      * @protected
      * @returns void
      */
     childChanged:function () {
-        this.image = this.child.imageUrl;
-        this.$.croppedImage.setSrc(this.image);
-        this.$.name.setValue(this.child.name);
-        this.$.leftHand.setValue(this.child.leftHand);
-        this.password.length = 0;
-        enyo.forEach(this.child.password, function (p) {
-            this.password.push(p);
-        }, this);
-        this.passwordChanged();
+		if (this.child) {
+			this.image = this.child.imageUrl;
+			this.$.croppedImage.setSrc(this.image || 'assets/images/rememberMeBackside.png');
+			this.$.name.setValue(this.child.name);
+			this.$.leftHand.setValue(this.child.leftHand);
+			this.password.length = 0;
+			enyo.forEach(this.child.password, function (p) {
+				this.password.push(p);
+			}, this);
+			this.passwordChanged()
+			this.groupsChanged();
+		}
     },
 
     /**
@@ -163,21 +217,24 @@ enyo.kind({
      * @returns void
      */
     deleteTap:function () {
-        this.child.sessions.list(enyo.bind(this, function (sessions) {
-            enyo.forEach(sessions, function (session) {
-                persistence.remove(session);
-            }, this);
-            persistence.remove(this.child);
-
-            var cb = enyo.bind(this, function () {
-                this.bubble('onChildrenChanged');
-                this.bubble('onBack');
-            });
-
-            persistence.flush(function () {
-                Grundschrift.Models.sync(['Child'], cb, cb);
-            });
-        }));
+		Grundschrift.Models.db.Sessions
+			.filter('userId', '==', this.child.id)
+			.toArray(enyo.bind(this, function(sessions) {
+				var next = enyo.bind(this, function() {
+					if (sessions.length) {
+						var session = sessions.pop();
+						Grundschrift.Models.ZippedJson.delete(session.pathsId, this, function() {
+							session.remove().then(next);
+						});
+					} else {
+						this.child.remove().then(enyo.bind(this, function () {
+							this.bubble('onChildrenChanged');
+							this.bubble('onBack');
+						}));
+					}
+				})
+				next();
+			}))
         this.hide();
     },
 
@@ -204,14 +261,10 @@ enyo.kind({
         this.child.password = this.password;
         this.child.imageUrl = this.image;
         this.child.leftHand = this.$.leftHand.getValue();
-        persistence.add(this.child);
 
-        var cb = enyo.bind(this, function () {
-            this.bubble('onChildrenChanged');
-            this.bubble('onBack');
-        });
-        persistence.flush(function () {
-            Grundschrift.Models.sync(['Child'], cb, cb);
-        });
+		this.child.save().then(enyo.bind(this, function () {
+			this.bubble('onChildrenChanged');
+			this.bubble('onBack');
+		}));
     }
 });

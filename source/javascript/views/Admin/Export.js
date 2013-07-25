@@ -4,7 +4,7 @@
  **/
 enyo.kind({
     name:'Grundschrift.Views.Admin.Export',
-    kind:'FittableRows',
+    kind:'Grundschrift.Views.Admin.BaseView',
 
     events: {
         onBack: ''
@@ -29,8 +29,6 @@ enyo.kind({
         {kind: 'onyx.InputDecorator', style: 'width: 100%', fit: true, components: [
             {kind: 'onyx.TextArea', style:'height:100%;width:100%', name:'exportContainer'}
         ]}
-
-
     ],
 
     /**
@@ -40,18 +38,37 @@ enyo.kind({
      * @return void
      */
     exportButtonClick:function (inSender) {
-        var modelsToDump = [];
+		var data = {}, counter = 0;
+
+		var cb = enyo.bind(this, function() {
+			counter--;
+			if (counter === 0) {
+				enyo.asyncMethod(this, 'setExportData', data);
+			}
+		});
+
         if (this.$.child.getValue()) {
-            modelsToDump.push(Grundschrift.Models.Child);
+			counter++;
+			Grundschrift.Models.User.export(this, function(childs) {
+				data.Child = childs;
+				cb();
+			});
         }
+
         if (this.$.session.getValue()) {
-            modelsToDump.push(Grundschrift.Models.Session);
+			counter++;
+			Grundschrift.Models.Session.export(this, function(sessions) {
+				data.Session = sessions;
+				cb();
+			});
         }
+
         if (this.$.level.getValue()) {
-            modelsToDump.push(Grundschrift.Models.Level);
-        }
-        if (modelsToDump.length) {
-            persistence.dump(modelsToDump, enyo.bind(this, 'setExportData'));
+			counter++;
+			Grundschrift.Models.Level.export(this, function(levels) {
+				data.Level = levels;
+				cb();
+			});
         }
 
     },
@@ -62,15 +79,7 @@ enyo.kind({
      * @return void
      */
     importButtonClick:function () {
-        persistence.reset(enyo.bind(this, function () {
-            persistence.schemaSync(enyo.bind(this, function () {
-                persistence.loadFromJson(this.$.exportContainer.getValue(), function () {
-                    navigator.notification.alert('Daten wurden importiert');
-                }, function () {
-                    navigator.notification.alert('Fehler!');
-                });
-            }));
-        }));
+
     },
 
     /**

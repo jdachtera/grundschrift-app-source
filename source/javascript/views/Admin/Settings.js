@@ -1,5 +1,5 @@
 enyo.kind({
-    kind:'Control',
+    kind:'Grundschrift.Views.Admin.BaseView',
     name:'Grundschrift.Views.Admin.Settings',
 
 	lastUpdateRequest: null,
