@@ -48,7 +48,8 @@ enyo.kind({
     handlers:{
         onLevelsLoaded:'levelsLoaded',
         onSessionsLoaded:'sessionsLoaded',
-        onSettingsLoaded:'settingsLoaded'
+        onSettingsLoaded:'settingsLoaded',
+		onBackButton: 'backButton'
     },
 
     components:[
@@ -288,8 +289,8 @@ enyo.kind({
             }, this);
 
             enyo.forEach(this.sessions, function (s) {
-                if (this.sessionCount[s.level.id] !== undefined && s.success) {
-                    this.sessionCount[s.level.id]++;
+                if (this.sessionCount[s.levelId] !== undefined && s.success) {
+                    this.sessionCount[s.levelId]++;
                 }
             }, this);
 

@@ -6,6 +6,7 @@ enyo.depends(
     'Splash.js',
     'GridList.js',
     'LevelMenu.js',
+	'ChildGrid.js',
     'ChildMenu.js',
     'Canvas.js',
     'MainCanvas.js',

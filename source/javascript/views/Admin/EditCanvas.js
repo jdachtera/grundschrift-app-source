@@ -98,14 +98,16 @@ enyo.kind({
      */
     levelChanged:function () {
         this.inherited(arguments);
-        this.paths = this.level.getPaths();
-        this.currentPath = 0;
-        this.currentPoint = 0;
-        this.setLineWidth(this.level.lineWidth);
-        this.publishValues();
-        enyo.asyncMethod(this, function () {
-            this.drawHighlightedPaths();
-        });
+        this.level.getPaths(this, function(paths) {
+			this.paths = paths;
+			this.currentPath = 0;
+			this.currentPoint = 0;
+			this.setLineWidth(this.level.lineWidth);
+			this.publishValues();
+			enyo.asyncMethod(this, function () {
+				this.drawHighlightedPaths();
+			});
+		});
     },
 
     /**

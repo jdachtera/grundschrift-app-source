@@ -5,6 +5,7 @@
  */
 enyo.kind({
     name:'Grundschrift.Views.Admin.Menu',
+	kind: 'Grundschrift.Views.Admin.BaseView',
     classes:'menu',
     layoutKind:'FittableColumnsLayout',
     events:{
@@ -25,6 +26,7 @@ enyo.kind({
 
     items: [
         {content: 'Benutzer administrieren', view: 'editChildren'},
+		{content: 'Gruppen bearbeiten', view: 'editGroups'},
         {content: 'Einstellungen', view: 'settings'},
         {content: 'Export', view: 'export'},
         {content: 'Buchstaben bearbeiten', view: 'editLevels'},
@@ -34,7 +36,11 @@ enyo.kind({
     components:[
         {kind:'FittableRows', style:'width:100%;', components:[
             {kind:'onyx.Toolbar', style:'height:80px', components:[
-                {kind:'ImageButton', type:'Exit', ontap:'doBack'}
+                {
+					kind:'ImageButton',
+					type:'Exit',
+					ontap:'doBack'
+				}
             ]},
             {kind:'Scroller', classes: 'onyx-menu onyx-picker', fit:true}
         ]}

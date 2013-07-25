@@ -1,10 +1,14 @@
 enyo.depends(
-    '$lib/persistence',
+	'q.min.js',
+	'$lib/jaydata/jaydata.js',
+	'$lib/jaydata/IndexedDbProvider.js',
+	'$lib/jaydata/SqLiteProvider.js',
+	'$lib/jaydata/jaydatamodules/qDeferred.js',
     'Models.js',
-    'Migrations.js',
     'Session.js',
+	'ZippedJson.js',
     'Level.js',
-    'Child.js',
+    'User.js',
 	'Group.js',
     'Sound.js',
     'SoundManager.js'

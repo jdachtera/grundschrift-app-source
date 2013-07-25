@@ -4,7 +4,7 @@
  */
 enyo.kind({
     name:'Grundschrift.Views.Admin.EditLevel',
-    //kind:'Grundschrift.Views.BaseView',
+    kind:'Grundschrift.Views.Admin.BaseView',
     layoutKind:'FittableColumnsLayout',
     published:{
         /**
@@ -146,10 +146,13 @@ enyo.kind({
             level = this.$.editCanvas.getLevel(),
             lineWidth = this.$.editCanvas.getLineWidth();
 
+		Grundschrift.Models.db.Levels.attach(level);
+
         level.lineWidth = lineWidth;
-        level.setPaths(enyo.cloneArray(paths));
-        persistence.add(level);
-        Grundschrift.Models.flushAndSync(['Level'], callback);
+        level.setPaths(enyo.cloneArray(paths), function() {
+			Grundschrift.Models.db.saveChanges(callback);
+		});
+
     },
 
     /**

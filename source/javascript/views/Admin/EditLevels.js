@@ -4,7 +4,7 @@
  * @author Jascha Dachtera <jascha.dachtera@googlemail.com>
  */
 enyo.kind({
-    kind:'FittableRows',
+    kind:'Grundschrift.Views.Admin.BaseView',
     name:'Grundschrift.Views.Admin.EditLevels',
     classes:'levelGrid',
     style:'height:100%',
@@ -58,7 +58,7 @@ enyo.kind({
             if (inEvent.update !== true) {
                 inEvent.item.$.levelItem.setContent(l.name);
             }
-            inEvent.item.$.levelItem.addRemoveClass('hasPaths', l.getPaths().length > 0);
+            inEvent.item.$.levelItem.addRemoveClass('hasPaths', l.pathsLength > 0);
         }
     },
 

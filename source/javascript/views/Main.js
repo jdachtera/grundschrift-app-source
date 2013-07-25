@@ -129,15 +129,17 @@ enyo.kind({
     levelChanged:function () {
 		this.bubble('onAsyncOperationStarted', {callback: enyo.bind(this, function() {
 			// Show / hide the canvas to fix Android not displaying the canvas
-			this.$.canvas.hide();
+			//this.$.canvas.hide();
 			enyo.asyncMethod(this, function() {
-				this.$.canvas.show();
-				this.$.canvas.resized();
+				//this.$.canvas.show();
+				//this.$.canvas.resized();
 				if (this.sessionCount === 0) {
 					setTimeout(enyo.bind(this, 'startDemo'), 300);
 				}
 			})
 		})});
+
+		this.$.canvas.setLevel(this.level);
 
 		this.setAid(false);
 
@@ -167,7 +169,7 @@ enyo.kind({
 			});
 		}
 
-        this.$.canvas.setLevel(this.level);
+
 
         enyo.forEach(Grundschrift.Models.Level.classNames, function (levelClass) {
             this.$.sideBar.addRemoveClass(levelClass, this.level.className == levelClass);
@@ -294,11 +296,6 @@ enyo.kind({
      */
     levelFinished:function (inSender, inEvent) {
         enyo.asyncMethod(this, function () {
-            var session = new Grundschrift.Models.Session({
-                level:this.level,
-                child:this.child,
-                success:inEvent.success
-            });
 
 			this.successHistory += inEvent.success ? 1 : -1;
 			this.successHistory = this.successHistory < -3 ? -3 : (this.successHistory > 0 ? 0 : this.successHistory);
@@ -308,27 +305,36 @@ enyo.kind({
 				this.setAid(false);
 			}
 
-            session.setPaths(inEvent.paths);
+			Grundschrift.Models.ZippedJson.create(inEvent.paths, this, function(z) {
+				var session = new Grundschrift.Models.Session({
+					levelId: this.level.id,
+					userId: this.child.id,
+					success:inEvent.success,
+					pathsId: z.id,
+					pathsLength: inEvent.paths.length
+				});
 
-            persistence.add(session);
-            Grundschrift.Models.flushAndSync(['Session'], enyo.bind(this, function () {
-                if (inEvent.success === true) {
+				session.save().then(enyo.bind(this, function() {
+					if (inEvent.success === true) {
 
-                    Grundschrift.Models.SoundManager.play(this.level.name.toString().toLowerCase());
-                    this.sessionCount++;
-                    var lastPoint = {};
+						Grundschrift.Models.SoundManager.play(this.level.name.toString().toLowerCase());
+						this.sessionCount++;
+						var lastPoint = {};
 
-                    if (inEvent.paths.length > 0 && inEvent.paths[inEvent.paths.length - 1].length > 0) {
-                        lastPoint = this.$.canvas.getAbsolutizedPoint(inEvent.paths[inEvent.paths.length - 1][inEvent.paths[inEvent.paths.length - 1].length - 1]);
-                    }
+						if (inEvent.paths.length > 0 && inEvent.paths[inEvent.paths.length - 1].length > 0) {
+							lastPoint = this.$.canvas.getAbsolutizedPoint(inEvent.paths[inEvent.paths.length - 1][inEvent.paths[inEvent.paths.length - 1].length - 1]);
+						}
 
-                    this.$.sessionStars.animateValueChange(this.sessionCount, lastPoint);
+						this.$.sessionStars.animateValueChange(this.sessionCount, lastPoint);
 
-                } else {
-                    this.resetCanvas();
-                }
-                this.bubble('onRequestCheckIfChildIsAllowedToPlay');
-            }));
+					} else {
+						this.resetCanvas();
+					}
+					this.bubble('onRequestCheckIfChildIsAllowedToPlay');
+				}))
+
+			});
+
         });
     },
 

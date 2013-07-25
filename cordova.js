@@ -7,6 +7,10 @@ var device = {
 
 window.setTimeout(function() {
     var e = document.createEvent('Events');
-    e.initEvent("deviceready");
+    e.initEvent("deviceready", true, true);
     document.dispatchEvent(e);
 }, 250);
+
+
+
+

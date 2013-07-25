@@ -7,6 +7,9 @@ enyo.kind({
     events: {
         onBack: ''
     },
+	handlers: {
+		onBackButton: 'backButton'
+	},
     components: [
         /**
          * The Admin Menu
@@ -23,6 +26,11 @@ enyo.kind({
          */
         {kind: 'Grundschrift.Views.Admin.EditChild', onBack: 'previous', onOpenStatistics: 'openStatistics'},
 
+		/**
+		 * The Edit child view
+		 */
+		{kind: 'Grundschrift.Views.Admin.EditGroups', onBack: 'openMenu'},
+
         /**
          * The statistics view
          */
@@ -36,7 +44,7 @@ enyo.kind({
         /**
          * The edit level view
          */
-        {kind: 'Grundschrift.Views.Admin.EditLevel', onBack: 'openMenu'},
+        {kind: 'Grundschrift.Views.Admin.EditLevel', onBack: 'openEditLevels'},
 
         /**
          * The export view
@@ -54,6 +62,14 @@ enyo.kind({
 		{kind: 'Grundschrift.Views.Admin.About', onBack: 'openMenu'}
 
     ],
+
+	backButton: function(inSender, inEvent) {
+		if (inEvent.pane === this) {
+			var pane = this.getPanels()[this.index];
+			this.waterfall('onBackButton', {pane: pane});
+			return true;
+		}
+	},
 
     openMenu: function() {
         this.pageName('menu');
@@ -73,6 +89,11 @@ enyo.kind({
         this.$.editChild.setChild(inEvent.child);
         this.pageName('editChild');
     },
+
+	openEditLevels: function() {
+		this.pageName('editLevels');
+		return true;
+	},
 
     openEditChildren: function() {
         this.pageName('editChildren');

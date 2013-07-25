@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <script src="jaydata.js"></script>
+    <script>
+        $data.Entity.extend('Grundschrift.Models.User', {
+            id: {
+                type: 'int',
+                key: true,
+                computed: true
+            },
+            name: {
+                type: String,
+                required: true,
+            },
+            password: {
+                type: Array,
+                elementType: 'int'
+            },
+            leftHand: {
+                type: Boolean
+            }
+        });
+
+
+        $data.Entity.extend('Grundschrift.Models.Level', {
+            id: {
+                type: 'int',
+                key: true,
+                computed: true
+            },
+            category: {
+                type: String
+            },
+            className: {
+                type: String
+            },
+            unlockCondition: {
+                type: String
+            },
+            lineWidth: {
+                type: 'int'
+            },
+            paths: {
+                type: String
+            }
+        });
+
+        $data.Entity.extend('Grundschrift.Models.Session', {
+            id: {
+                type: 'int',
+                key: true,
+                computed: true
+            },
+            paths: {
+                type: String
+            },
+            success: {
+                type: Boolean
+            },
+            level: {
+                type: Grundschrift.Models.Level
+            },
+            child: {
+                type: Grundschrift.Models.Child
+            }
+        });
+
+        $data.EntityContext.extend("Grundschrift.Models.Database", {
+            Levels: {
+                type: $data.EntitySet,
+                elementType: Grundschrift.Models.Level
+            },
+            Sessions: {
+                type: $data.EntitySet,
+                elementType: Grundschrift.Models.Session
+            },
+            Users: {
+                type: $data.EntitySet,
+                elementType: Grundschrift.Models.User
+            }
+        });
+
+
+
+        var db = Grundschrift.Models.db = new Grundschrift.Models.Database({
+            provider: 'webSql', databaseName: 'Grundschrift'
+        });
+
+        db.onReady(function() {
+            var users = db.Users.addMany([
+                {
+                    name: 'Peter',
+                    password: [0, 1, 2],
+                    leftHand: false
+                }
+            ]);
+
+
+            var levels = db.Levels.addMany([
+                {
+                    name: 'A',
+                    category: 'GROSSBUCHSTABEN',
+                    className: 'red',
+                    unlockCondition: '',
+                    lineWidth: 40,
+                    paths: ''
+                }
+
+            ]);
+
+            db.saveChanges(function() {
+                console.log(users, levels);
+            });
+
+            console.log('db is ready');
+        });
+    </script>
+</head>
+<body>
+
+</body>
+</html>

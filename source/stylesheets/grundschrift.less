@@ -1,9 +1,19 @@
 @import 'variables';
 
+@font-face {
+  font-family: 'Grundschrift';
+  src: url("@{assets-url}/fonts/Grundschrift/Grundschrift Beta.ttf");
+}
+
+@font-face {
+  font-family: 'Fibel';
+  src: url("@{assets-url}/fonts/fibel/Fibel Nord.ttf");
+}
+
 body {
   margin: 0;
   padding: 0;
-  font-family: Arial;
+  font-family: Grundschrift, "Comic Sans MS", Arial;
   background-image: none;
   &.loading {
     background-image: url("@{assets-url}/images/splashBackground.png");

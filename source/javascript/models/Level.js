@@ -1,8 +1,18 @@
 $data.Entity.extend('Grundschrift.Models.Level', {
 	id: {
-		type: 'int',
+		type: $data.Guid,
 		key: true,
 		computed: true
+	},
+	_lastChange: {
+		type: 'int'
+	},
+	name: {
+		type: String
+	},
+	illustrations: {
+		type: Array,
+		elementType: String
 	},
 	category: {
 		type: String
@@ -16,8 +26,11 @@ $data.Entity.extend('Grundschrift.Models.Level', {
 	lineWidth: {
 		type: 'int'
 	},
-	paths: {
+	pathsId: {
 		type: String
+	},
+	pathsLength: {
+		type: 'int'
 	}
 });
 
@@ -88,8 +101,12 @@ Grundschrift.Models.Level.sortByName = function (a, b) {
  * Get the levels paths
  * @return {String}
  */
-Grundschrift.Models.Level.prototype.getPaths = function () {
-    return this.paths;
+Grundschrift.Models.Level.prototype.getPaths = function (context, callback) {
+	if (this.pathsId) {
+		Grundschrift.Models.ZippedJson.find(this.pathsId, context, callback);
+	} else {
+		enyo.asyncMethod(context, callback, []);
+	}
 };
 
 /**
@@ -97,8 +114,17 @@ Grundschrift.Models.Level.prototype.getPaths = function () {
  * @param paths
  * @return {*}
  */
-Grundschrift.Models.Level.prototype.setPaths = function (paths) {
-    this.paths = paths
+Grundschrift.Models.Level.prototype.setPaths = function(paths, context, callback) {
+	paths = paths || [];
+    this.pathsLength = paths.length
+	if (this.pathsId) {
+		Grundschrift.Models.ZippedJson.update(this.pathsId, paths, context, callback);
+	} else {
+		Grundschrift.Models.ZippedJson.create(paths, this, function(z) {
+			this.pathsId = z.id;
+			enyo.asyncMethod(context, callback);
+		});
+	}
     return this;
 };
 
@@ -112,51 +138,98 @@ Grundschrift.Models.Level.checkUpdates = function (callback, forceReload) {
     var count = 1, next = function () {
         count--;
         if (count == 0) {
-            persistence.flush(callback);
+			console.log('Saving the changes');
+            Grundschrift.Models.db.Levels.saveChanges(callback);
         }
     };
 
-    new enyo.Ajax({
-        url:'assets/levels/index.json',
-        cacheBust:false
-    }).response(function (inSender, categories) {
-            console.log('Level index file loaded.');
-            for (var category in categories) {
-                if (categories.hasOwnProperty(category)) {
-                    (function (category, levelNames) {
-                        console.log('Now loading levels in category ' + category);
-                        enyo.forEach(levelNames, function (levelName) {
-                            count++;
-                            new enyo.Ajax({
-                                url:'assets/levels/' + category + '/' + levelName + '/metadata.json',
-                                cacheBust:false
-                            }).response(function (inSender, jsonLevel) {
-                                    console.log('Now loading level "' + jsonLevel.name + '"');
-                                    Grundschrift.Models.Level.load(jsonLevel.id, function (dbLevel) {
-                                        if (dbLevel == null) {
-                                            dbLevel = new Grundschrift.Models.Level(jsonLevel);
-                                            dbLevel.id = jsonLevel.id;
-                                            dbLevel._lastChange = jsonLevel._lastChange;
-                                            console.log('Saving new level: ' + dbLevel.name);
-                                            persistence.add(dbLevel);
-                                        } else if (jsonLevel._lastChange > dbLevel._data._lastChange || forceReload) {
-                                            enyo.mixin(dbLevel, jsonLevel);
-                                            dbLevel.markDirty('paths');
-                                            persistence.add(dbLevel);
-                                            console.log('Saving new level version: ' + dbLevel.name);
-                                        }
-                                        next();
-                                    }, next);
-                                }).error(function (inSender, inError) {
-                                    console.log(enyo.json.stringify(inError));
-                                    next();
-                                }).go();
-                        });
-                    })(category, categories[category]);
-                }
-            }
-            next();
-        }).error(function () {
-            console.error('Error loading assets/levels/index.json');
-        }).go();
+	Grundschrift.Models.db.onReady(enyo.bind(this, function() {
+		new enyo.Ajax({
+			url:'assets/levels/index.json',
+			cacheBust:false
+		}).response(function (inSender, categories) {
+				console.log('Level index file loaded.');
+				for (var category in categories) {
+					if (categories.hasOwnProperty(category)) {
+						(function (category, levelNames) {
+
+							console.log('Now loading levels in category ' + category);
+
+							enyo.forEach(levelNames, function (levelName) {
+								count++;
+								new enyo.Ajax({
+									url:'assets/levels/' + category + '/' + levelName + '/metadata.json',
+									cacheBust:false
+								}).response(function (inSender, jsonLevel) {
+										console.log('Now loading level "' + jsonLevel.name + '"');
+										Grundschrift.Models.db.Levels.filter('id', '==', jsonLevel.id)
+											.take(1)
+											.toArray(enyo.bind(this, function(items) {
+												var dbLevel = items[0];
+												if (dbLevel) {
+													if (jsonLevel._lastChange > dbLevel._lastChange) {
+														console.log('Saving new level version: ' + jsonLevel.name);
+														var paths = jsonLevel.paths;
+														delete(jsonLevel.paths);
+														Grundschrift.Models.db.Levels.attach(dbLevel);
+														enyo.mixin(dbLevel, jsonLevel);
+														dbLevel.setPaths(paths, this, next);
+													} else {
+														next();
+													}
+												} else {
+													console.log('Saving new level: ' + jsonLevel.name);
+													Grundschrift.Models.ZippedJson.create(jsonLevel.paths, this, function(z) {
+														jsonLevel.pathsLength = jsonLevel.paths.length;
+														jsonLevel.pathsId = z.id;
+														dbLevel = new Grundschrift.Models.Level(jsonLevel);
+														Grundschrift.Models.db.Levels.add(dbLevel);
+														next();
+													});
+												}
+											}));
+									}).error(function (inSender, inError) {
+										console.log(enyo.json.stringify(inError));
+										next();
+									}).go();
+							});
+						})(category, categories[category]);
+					}
+				}
+				next();
+			}).error(function () {
+				console.error('Error loading assets/levels/index.json');
+			}).go();
+	}))
+
+
 };
+
+
+Grundschrift.Models.Level.export = function(context, callback) {
+	var data = [];
+	Grundschrift.Models.db.Levels.toArray(function(levels) {
+		function next() {
+			if (levels.length) {
+				var level = levels.shift();
+				level.getPaths(this, function(paths) {
+					data.push({
+						id: level.id,
+						name: level.name,
+						category: level.category,
+						className: level.className,
+						_lastChange: level._lastChange,
+						illustrations: level.illustrations,
+						unlockCondition: level.unlockCondition,
+						lineWidth: level.lineWidth,
+						paths: paths
+					});
+					next();
+				})
+			} else {
+				enyo.asyncMethod(context, callback, data);
+			}
+		}
+		next()
+	});
+}

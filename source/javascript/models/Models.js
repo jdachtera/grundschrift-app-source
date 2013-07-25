@@ -17,17 +17,14 @@ Grundschrift.Models.assetPath = '';
 
 Grundschrift.Models.developerEmail = 'jascha.dachtera@googlemail.com';
 
-Grundschrift.Models.defaultCallback = function () {
-    if (persistence.debug === true) {
-        console.log(arguments);
-    }
-};
+Grundschrift.Models.defaultCallback = function () {};
+
 
 /**
- * Initialize persistence js and the models
+ * Initialize jayData and the models
  * @param cb
  */
-Grundschrift.Models.create = function (cb) {
+Grundschrift.Models.create = function (context, callback) {
     var dbName = 'Grundschrift';
 
 	// Move the database to /media/external to gain more space on webOS
@@ -35,37 +32,51 @@ Grundschrift.Models.create = function (cb) {
         dbName = 'ext:Grundschrift';
     }
 
-    persistence.debug = false;
-    persistence.store.websql.config(persistence, dbName, 'Grundschrift', 5 * 1024 * 1024);
+	$data.EntityContext.extend("Grundschrift.Models.Database", {
+		Levels: {
+			type: $data.EntitySet,
+			elementType: Grundschrift.Models.Level
+		},
+		Sessions: {
+			type: $data.EntitySet,
+			elementType: Grundschrift.Models.Session
+		},
+		Users: {
+			type: $data.EntitySet,
+			elementType: Grundschrift.Models.User
+		},
+		Groups: {
+			type: $data.EntitySet,
+			elementType: Grundschrift.Models.Group
+		},
+		ZippedJson: {
+			type: $data.EntitySet,
+			elementType: Grundschrift.Models.ZippedJson
+		}
+	});
 
-    document.addEventListener("online", enyo.bind(this, 'onOnline'), false);
-    document.addEventListener("offline", enyo.bind(this, 'onOffline'), false);
+	var db = Grundschrift.Models.db = new Grundschrift.Models.Database({
+		provider: 'local', databaseName: dbName//, dbCreation: $data.storageProviders.DbCreationType.Merge
+	});
 
+	db.onReady(enyo.bind(this, function() {
+		var cb = enyo.bind(this, function() {
+			this.init = true;
+			enyo.call(context, callback);
+			this.clearStack();
+		});
+		var version = parseInt(localStorage['grundschrift_version'] || 0, 10);
+		if (Grundschrift.Models.version > version) {
+			Grundschrift.Models.Level.checkUpdates(enyo.bind(this, function() {
+				localStorage['grundschrift_version'] = Grundschrift.Models.version;
+				cb();
+			}));
+		} else {
+			cb();
+		}
 
-    enyo.forEach(Grundschrift.Models.Migrations, function (migration) {
-        persistence.defineMigration(migration[0], migration[1]);
-    }, this);
+	}));
 
-
-    var syncFinishCb = enyo.bind(this, function () {
-        this.init = true;
-        this.clearStack();
-        cb && cb();
-    });
-
-    var schemaSyncCb = enyo.bind(this, function () {
-        console.log('Schema synced');
-
-        persistence.migrations.init(enyo.bind(this, function () {
-            persistence.migrate(enyo.bind(this, function () {
-                this.flushAndSync(['Child', 'Level', 'Session'], syncFinishCb);
-            }));
-        }));
-
-
-    });
-
-    persistence.schemaSync(schemaSyncCb, schemaSyncCb);
 };
 
 /**
@@ -92,88 +103,6 @@ Grundschrift.Models.clearStack = function () {
     this.stack.length = 0;
 };
 
-Grundschrift.Models.onOnline = function () {
-    this.online = true;
-    this.serialSync(enyo.bind(this, function () {
-        console.log('Sync requests processed!');
-    }), enyo.bind(this, function () {
-        console.log('Sync requests could not be processed!');
-    }));
-};
-
-Grundschrift.Models.onOffline = function () {
-    this.online = false;
-};
-
-/**
- * A serial sync method
- * @param successCallback
- * @param errorCallback
- */
-Grundschrift.Models.serialSync = function (successCallback, errorCallback) {
-    var modelName = this.syncRequests.shift(),
-        self = enyo.bind(this, 'serialSync');
-    if (modelName) {
-        var model = this[modelName];
-        if (model) {
-            console.log(modelName + ' syncing');
-            model.syncAll(persistence.sync.preferRemoteConflictHandler, enyo.bind(this, function () {
-                console.log(modelName + ' synced');
-                self(successCallback, errorCallback);
-            }), enyo.bind(this, function () {
-                this.syncRequests.unshift('modelName');
-                console.log(modelName + ' sync failed. Network is down.');
-                errorCallback(arguments);
-            }));
-        } else if (this.syncRequests.length > 0) {
-            self(successCallback, errorCallback);
-        }
-
-    } else {
-        successCallback();
-    }
-};
-
-/**
- * Sync the given models with the server consecutively
- * @param modelNames
- * @param successCallback
- * @param errorCallback
- */
-Grundschrift.Models.sync = function (modelNames, successCallback, errorCallback) {
-    successCallback = successCallback || this.defaultCallback;
-    errorCallback = errorCallback || this.defaultCallback;
-
-    if (enyo.isString(modelNames)) {
-        modelNames = [modelNames];
-    }
-
-    enyo.forEach(modelNames, function (modelName) {
-        if (enyo.indexOf(modelName, this.syncRequests) === -1) {
-            this.syncRequests.push(modelName);
-        }
-    }, this);
-    if (this.online === true) {
-        this.serialSync(successCallback, errorCallback);
-    } else {
-        errorCallback();
-    }
-};
-
-/**
- * Flush the model changes and sync with the server
- * @param modelNames
- * @param flushCallback
- * @param successCallback
- * @param errorCallback
- */
-Grundschrift.Models.flushAndSync = function (modelNames, flushCallback, successCallback, errorCallback) {
-    flushCallback = flushCallback || Grundschrift.Models.defaultCallback;
-    persistence.flush(function () {
-        flushCallback();
-        Grundschrift.Models.sync(modelNames, successCallback, errorCallback);
-    });
-};
 
 /**
  * Json compression
@@ -212,6 +141,22 @@ Grundschrift.Models.deCompressJson = function (inJson, inColumns) {
     }
     return outJson;
 };
+
+Grundschrift.Models.uuid2guid = function(uuid) {
+	var guid = (uuid.slice(0, 8) + '-' +
+		uuid.slice(8, 12) + '-' +
+		uuid.slice(12, 16) + '-' +
+		uuid.slice(16, 20) + '-' +
+		uuid.slice(20));
+	return guid;
+};
+
+Grundschrift.Models.guid2uuid = function(guid) {
+	return guid.split('-').join('');
+};
+
+
+
 
 
 
