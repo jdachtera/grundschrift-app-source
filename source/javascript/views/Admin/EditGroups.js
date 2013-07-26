@@ -92,7 +92,7 @@ enyo.kind({
 	save: function(inSender, inEvent) {
 		this.bubble('onAsyncOperationStarted');
 		enyo.forEach(this.groups, function(group) {
-			Grundschrift.Models.db.Groups[group.id ? 'attach' : 'add'](group);
+			Grundschrift.Models.db.groups[group.id ? 'attach' : 'add'](group);
 		}, this);
 
 		enyo.forEach(this.updateQueue, function(cb) {
@@ -100,7 +100,7 @@ enyo.kind({
 		});
 		this.updateQueue.length = 0;
 
-		Grundschrift.Models.db.Groups.saveChanges(enyo.bind(this, function() {
+		Grundschrift.Models.db.groups.saveChanges(enyo.bind(this, function() {
 			this.bubble('onGroupsChanged');
 			this.bubble('onAsyncOperationFinished');
 			this.bubble('onBack');
@@ -111,8 +111,8 @@ enyo.kind({
 		var group = this.groups[inEvent.index];
 		if (group.id) {
 			this.bubble('onAsyncOperationStarted');
-			Grundschrift.Models.db.Groups.remove(group);
-			Grundschrift.Models.db.Groups.saveChanges(enyo.bind(this, function() {
+			Grundschrift.Models.db.groups.remove(group);
+			Grundschrift.Models.db.groups.saveChanges(enyo.bind(this, function() {
 				this.bubble('onAsyncOperationFinished');
 				this.bubble('onGroupsChanged');
 			}));

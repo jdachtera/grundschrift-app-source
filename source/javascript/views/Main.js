@@ -134,7 +134,7 @@ enyo.kind({
 				//this.$.canvas.show();
 				//this.$.canvas.resized();
 				if (this.sessionCount === 0) {
-					setTimeout(enyo.bind(this, 'startDemo'), 300);
+					this.startDemo();
 				}
 			})
 		})});
@@ -305,7 +305,7 @@ enyo.kind({
 				this.setAid(false);
 			}
 
-			Grundschrift.Models.ZippedJson.create(inEvent.paths, this, function(z) {
+			Grundschrift.Models.SessionData.create(inEvent.paths, this, function(z) {
 				var session = new Grundschrift.Models.Session({
 					levelId: this.level.id,
 					userId: this.child.id,

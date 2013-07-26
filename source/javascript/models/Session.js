@@ -4,6 +4,9 @@ $data.Entity.extend('Grundschrift.Models.Session', {
 		key: true,
 		computed: true
 	},
+	_lastChange: {
+		type: 'int'
+	},
 	pathsId: {
 		type: String,
 	},
@@ -28,7 +31,7 @@ $data.Entity.extend('Grundschrift.Models.Session', {
  */
 Grundschrift.Models.Session.prototype.getPaths = function (context, callback) {
 	if (this.pathsId) {
-		Grundschrift.Models.ZippedJson.find(this.pathsId, context, callback);
+		Grundschrift.Models.SessionData.find(this.pathsId, context, callback);
 	} else {
 		enyo.asyncMethod(context, callback, []);
 	}
@@ -43,9 +46,9 @@ Grundschrift.Models.Session.prototype.setPaths = function(paths, context, callba
 	paths = paths || [];
 	this.pathsLength = paths.length
 	if (this.pathsId) {
-		Grundschrift.Models.ZippedJson.update(this.pathsId, paths, context, callback);
+		Grundschrift.Models.SessionData.update(this.pathsId, paths, context, callback);
 	} else {
-		Grundschrift.Models.ZippedJson.create(paths, this, function(z) {
+		Grundschrift.Models.SessionData.create(paths, this, function(z) {
 			this.pathsId = z.id;
 			enyo.asyncMethod(context, callback);
 		});
@@ -55,7 +58,7 @@ Grundschrift.Models.Session.prototype.setPaths = function(paths, context, callba
 
 Grundschrift.Models.Session.export = function(context, callback) {
 	var data = [];
-	Grundschrift.Models.db.Sessions.toArray(function(sessions) {
+	Grundschrift.Models.db.sessions.toArray(function(sessions) {
 		function next() {
 			if (sessions.length) {
 				var session = sessions.shift();

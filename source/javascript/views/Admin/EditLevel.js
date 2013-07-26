@@ -146,8 +146,9 @@ enyo.kind({
             level = this.$.editCanvas.getLevel(),
             lineWidth = this.$.editCanvas.getLineWidth();
 
-		Grundschrift.Models.db.Levels.attach(level);
+		Grundschrift.Models.db.levels.attach(level);
 
+		level._lastChange = Date.now();
         level.lineWidth = lineWidth;
         level.setPaths(enyo.cloneArray(paths), function() {
 			Grundschrift.Models.db.saveChanges(callback);
@@ -176,7 +177,7 @@ enyo.kind({
                     "unlockCondition":level.unlockCondition,
                     "lineWidth":level.lineWidth,
                     "_lastChange":level._lastChange,
-                    "paths":level.paths
+                    "paths": this.$.editCanvas.getPaths()
                 }, undefined, 2))
             );
 

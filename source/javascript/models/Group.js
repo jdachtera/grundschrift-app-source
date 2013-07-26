@@ -4,6 +4,9 @@ $data.Entity.extend('Grundschrift.Models.Group', {
 		key: true,
 		computed: true
 	},
+	_lastChange: {
+		type: 'int'
+	},
 	name: {
 		type: String
 	},

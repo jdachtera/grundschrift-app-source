@@ -204,7 +204,7 @@ enyo.kind({
             allowedPlayTime:20,
             levelSortMode:'sortByName',
             maxSessions: 25,
-			maxTolerance: 30
+			maxTolerance: 40
         };
 
         enyo.mixin(settings, enyo.json.parse(localStorage.settings || '{}'));
@@ -230,11 +230,14 @@ enyo.kind({
 		this.bubble('onAsyncOperationStarted', {background: !!inEvent.background});
 
         Grundschrift.Models.ready(this, function () {
-			console.log('models ready');
-            Grundschrift.Models.db.Users.toArray(enyo.bind(this, function (children) {
+
+
+            Grundschrift.Models.db.users.toArray(enyo.bind(this, function (children) {
+
 
                 this.waterfall('onChildrenLoaded', children);
                 this.bubble('onAsyncOperationFinished', {background: !!inEvent.background});
+
             }));
         });
     },
@@ -249,7 +252,7 @@ enyo.kind({
 		this.bubble('onAsyncOperationStarted', {background: !!inEvent.background});
 
 		Grundschrift.Models.ready(this, function () {
-			Grundschrift.Models.db.Groups.toArray(enyo.bind(this, function (groups) {
+			Grundschrift.Models.db.groups.toArray(enyo.bind(this, function (groups) {
 				groups.sort(function(a, b) {
 					return a.name > b.name;
 				});
@@ -270,7 +273,7 @@ enyo.kind({
 		if (this.selectedChild) {
 			this.bubble('onAsyncOperationStarted', {background: !!inEvent.background});
 			Grundschrift.Models.ready(this, function () {
-				Grundschrift.Models.db.Sessions.filter(function(session) {
+				Grundschrift.Models.db.sessions.filter(function(session) {
 					return session.userId == this.child.id;
 				}, {
 					child: this.selectedChild
@@ -294,7 +297,7 @@ enyo.kind({
 		inEvent = inEvent || {};
 		this.bubble('onAsyncOperationStarted', {background: !!inEvent.background});
 
-        Grundschrift.Models.db.Levels.toArray(enyo.bind(this, function (levels) {
+        Grundschrift.Models.db.levels.toArray(enyo.bind(this, function (levels) {
             if (enyo.isFunction(Grundschrift.Models.Level[Grundschrift.Models.Level.sortMode])) {
                 levels.sort(Grundschrift.Models.Level[Grundschrift.Models.Level.sortMode]);
             }

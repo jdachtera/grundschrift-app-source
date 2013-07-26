@@ -5,11 +5,11 @@ enyo.kind({
 	lastUpdateRequest: null,
 
     components:[
-        {kind:'FittableRows', style:'width:100%;', components:[
+       // {kind:'FittableRows', style:'width:100%;', components:[
             {kind:'onyx.Toolbar', style:'height:80px', components:[
                 {kind:'ImageButton', type:'Exit', ontap:'doBack'}
             ]},
-            {kind: 'Scroller', style:'padding: 10px', components: [
+            {kind: 'Scroller', fit : true, style:'padding: 10px', components: [
                 {tag:'h2', content:'Passwort:'},
                 {kind:'onyx.Input', name:'password', setting:'password', onchange:'setSetting', onkeyup:'setSetting'},
                 {tag:'h2', content:'Rendermodus:'},
@@ -29,7 +29,7 @@ enyo.kind({
                 {tag:'h2', content:'Wechsel zum nächsten Buchstaben:'},
                 {kind:'Grundschrift.Views.IntegerSlider', caption:'Erfolgreiche Versuche', min:5, max:60, step:5, name:'maxSessions', setting:'maxSessions', onChange:'setSetting'}
             ]}
-        ]}
+        //]}
     ],
     events:{
         onSettingsChanged:'',

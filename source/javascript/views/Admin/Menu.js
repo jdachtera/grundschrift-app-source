@@ -27,9 +27,9 @@ enyo.kind({
     items: [
         {content: 'Benutzer administrieren', view: 'editChildren'},
 		{content: 'Gruppen bearbeiten', view: 'editGroups'},
-        {content: 'Einstellungen', view: 'settings'},
-        {content: 'Export', view: 'export'},
-        {content: 'Buchstaben bearbeiten', view: 'editLevels'},
+        {content: 'Einstellungen', view: 'settings' },
+        {content: 'Export', view: 'export', showing: !window.GrundschriftIsReleaseMode},
+        {content: 'Buchstaben bearbeiten', view: 'editLevels', showing: !window.GrundschriftIsReleaseMode},
 		{content: 'Über diese Anwendung', view: 'about'}
     ],
 

@@ -4,9 +4,14 @@ $data.Entity.extend('Grundschrift.Models.User', {
 		key: true,
 		computed: true
 	},
+	_lastChange: {
+		type: 'int'
+	},
+	gender: {
+		type: String
+	},
 	name: {
-		type: String,
-		required: true,
+		type: String
 	},
 	password: {
 		type: Array,
@@ -22,7 +27,7 @@ $data.Entity.extend('Grundschrift.Models.User', {
 
 Grundschrift.Models.User.export = function(context, callback) {
 	var data = [];
-	Grundschrift.Models.db.Users.toArray(function(users) {
+	Grundschrift.Models.db.users.toArray(function(users) {
 		function next() {
 			if (users.length) {
 				var user = users.shift();

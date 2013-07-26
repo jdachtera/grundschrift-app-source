@@ -31,6 +31,12 @@ $data.Entity.extend('Grundschrift.Models.Level', {
 	},
 	pathsLength: {
 		type: 'int'
+	},
+	leftPathsId: {
+		type: String
+	},
+	leftPathsLength: {
+		type: 'int'
 	}
 });
 
@@ -103,7 +109,7 @@ Grundschrift.Models.Level.sortByName = function (a, b) {
  */
 Grundschrift.Models.Level.prototype.getPaths = function (context, callback) {
 	if (this.pathsId) {
-		Grundschrift.Models.ZippedJson.find(this.pathsId, context, callback);
+		Grundschrift.Models.LevelData.find(this.pathsId, context, callback);
 	} else {
 		enyo.asyncMethod(context, callback, []);
 	}
@@ -118,9 +124,9 @@ Grundschrift.Models.Level.prototype.setPaths = function(paths, context, callback
 	paths = paths || [];
     this.pathsLength = paths.length
 	if (this.pathsId) {
-		Grundschrift.Models.ZippedJson.update(this.pathsId, paths, context, callback);
+		Grundschrift.Models.LevelData.update(this.pathsId, paths, context, callback);
 	} else {
-		Grundschrift.Models.ZippedJson.create(paths, this, function(z) {
+		Grundschrift.Models.LevelData.create(paths, this, function(z) {
 			this.pathsId = z.id;
 			enyo.asyncMethod(context, callback);
 		});
@@ -139,7 +145,7 @@ Grundschrift.Models.Level.checkUpdates = function (callback, forceReload) {
         count--;
         if (count == 0) {
 			console.log('Saving the changes');
-            Grundschrift.Models.db.Levels.saveChanges(callback);
+            Grundschrift.Models.db.levels.saveChanges(callback);
         }
     };
 
@@ -162,7 +168,7 @@ Grundschrift.Models.Level.checkUpdates = function (callback, forceReload) {
 									cacheBust:false
 								}).response(function (inSender, jsonLevel) {
 										console.log('Now loading level "' + jsonLevel.name + '"');
-										Grundschrift.Models.db.Levels.filter('id', '==', jsonLevel.id)
+										Grundschrift.Models.db.levels.filter('id', '==', jsonLevel.id)
 											.take(1)
 											.toArray(enyo.bind(this, function(items) {
 												var dbLevel = items[0];
@@ -171,7 +177,7 @@ Grundschrift.Models.Level.checkUpdates = function (callback, forceReload) {
 														console.log('Saving new level version: ' + jsonLevel.name);
 														var paths = jsonLevel.paths;
 														delete(jsonLevel.paths);
-														Grundschrift.Models.db.Levels.attach(dbLevel);
+														Grundschrift.Models.db.levels.attach(dbLevel);
 														enyo.mixin(dbLevel, jsonLevel);
 														dbLevel.setPaths(paths, this, next);
 													} else {
@@ -179,11 +185,11 @@ Grundschrift.Models.Level.checkUpdates = function (callback, forceReload) {
 													}
 												} else {
 													console.log('Saving new level: ' + jsonLevel.name);
-													Grundschrift.Models.ZippedJson.create(jsonLevel.paths, this, function(z) {
+													Grundschrift.Models.LevelData.create(jsonLevel.paths, this, function(z) {
 														jsonLevel.pathsLength = jsonLevel.paths.length;
 														jsonLevel.pathsId = z.id;
 														dbLevel = new Grundschrift.Models.Level(jsonLevel);
-														Grundschrift.Models.db.Levels.add(dbLevel);
+														Grundschrift.Models.db.levels.add(dbLevel);
 														next();
 													});
 												}
@@ -208,7 +214,7 @@ Grundschrift.Models.Level.checkUpdates = function (callback, forceReload) {
 
 Grundschrift.Models.Level.export = function(context, callback) {
 	var data = [];
-	Grundschrift.Models.db.Levels.toArray(function(levels) {
+	Grundschrift.Models.db.levels.toArray(function(levels) {
 		function next() {
 			if (levels.length) {
 				var level = levels.shift();

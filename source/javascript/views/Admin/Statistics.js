@@ -117,7 +117,7 @@ enyo.kind({
 
         if (this.sessions.length) {
 
-            Grundschrift.Models.db.Sessions
+            Grundschrift.Models.db.sessions
 				.filter('id', '==', this.sessions[this.sessionIndex].id)
 				.toArray(enyo.bind(this, function (items) {
                 	this.setSession(items[0]);

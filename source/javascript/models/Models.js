@@ -33,25 +33,29 @@ Grundschrift.Models.create = function (context, callback) {
     }
 
 	$data.EntityContext.extend("Grundschrift.Models.Database", {
-		Levels: {
+		levels: {
 			type: $data.EntitySet,
 			elementType: Grundschrift.Models.Level
 		},
-		Sessions: {
+		sessions: {
 			type: $data.EntitySet,
 			elementType: Grundschrift.Models.Session
 		},
-		Users: {
+		users: {
 			type: $data.EntitySet,
 			elementType: Grundschrift.Models.User
 		},
-		Groups: {
+		groups: {
 			type: $data.EntitySet,
 			elementType: Grundschrift.Models.Group
 		},
-		ZippedJson: {
+		levelData: {
 			type: $data.EntitySet,
-			elementType: Grundschrift.Models.ZippedJson
+			elementType: Grundschrift.Models.LevelData
+		},
+		sessionData: {
+			type: $data.EntitySet,
+			elementType: Grundschrift.Models.SessionData
 		}
 	});
 

@@ -46,6 +46,28 @@ enyo.kind({
                     {kind:'Grundschrift.Views.CroppedImage', ontap:'childImageTap', style:'width:150pt;height:80pt;border:2px white solid;'}
                 ]},
 				{kind: 'onyx.InputDecorator', components:[
+					{content:'Geschlecht:'},
+					{kind: "onyx.PickerDecorator", components: [
+						{},
+						{
+							name: "genderPicker",
+							kind: "onyx.Picker",
+							onChange: 'changeGender',
+							components: [
+								{
+									name: 'genderUndefined', content: 'Nicht angegeben', value: ''
+								},
+								{
+									name: 'genderMale', content: 'Junge', value: 'm'
+								},
+								{
+									name: 'genderFemale', content: 'Mädchen', value: 'f'
+								}
+							]
+						}
+					]}
+				]},
+				{kind: 'onyx.InputDecorator', components:[
 					{content:'Gruppe:'},
 					{kind: "onyx.PickerDecorator", components: [
 						{},
@@ -127,6 +149,12 @@ enyo.kind({
 		}
 	},
 
+	changeGender: function(inSender, inEvent) {
+		if (this.child) {
+			this.child.gender = inEvent.selected.value;
+		}
+	},
+
 
 	/**
      * Fills the form with the childs properties
@@ -140,6 +168,11 @@ enyo.kind({
 			this.$.name.setValue(this.child.name);
 			this.$.leftHand.setValue(this.child.leftHand);
 			this.password.length = 0;
+
+			this.$.genderUndefined.setActive(this.child.gender !== 'm' && this.child.gender !== 'f');
+			this.$.genderMale.setActive(this.child.gender === 'm');
+			this.$.genderFemale.setActive(this.child.gender === 'f')
+
 			enyo.forEach(this.child.password, function (p) {
 				this.password.push(p);
 			}, this);
@@ -223,7 +256,7 @@ enyo.kind({
 				var next = enyo.bind(this, function() {
 					if (sessions.length) {
 						var session = sessions.pop();
-						Grundschrift.Models.ZippedJson.delete(session.pathsId, this, function() {
+						Grundschrift.Models.SessionData.delete(session.pathsId, this, function() {
 							session.remove().then(next);
 						});
 					} else {
