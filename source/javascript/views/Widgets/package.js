@@ -7,5 +7,6 @@ enyo.depends(
     'SessionStars.js',
     'GridItem.js',
     'LevelMenuItem.js',
-    'ChildItem.js'
+    'ChildItem.js',
+	'QuitDialog.js'
 );

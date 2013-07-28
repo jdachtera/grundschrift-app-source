@@ -14,7 +14,8 @@ enyo.kind({
     published:{
         playStartTime:0,
 		asyncOperationsRunning: 0,
-        allowedPlayTime:1
+        allowedPlayTime:1,
+		levels: []
     },
 
     selectedChild:null,
@@ -59,7 +60,8 @@ enyo.kind({
         },
 
         {kind: 'Grundschrift.Views.ChildMenu',
-            onSettingsClicked:'settingsClicked'},
+            onSettingsClicked:'settingsClicked',
+			onBack: 'confirmQuit'},
 
         {kind: 'Grundschrift.Views.Password',
             onBack:'back',
@@ -91,7 +93,9 @@ enyo.kind({
 
         {kind: 'Grundschrift.Views.LevelFinishedPopup',
             onLevelSelected: 'loadLevel',
-            onBack: 'backToLevelMenu'}
+            onBack: 'backToLevelMenu'},
+
+		{kind: 'Grundschrift.Views.QuitDialog'}
 
     ],
 
@@ -142,13 +146,8 @@ enyo.kind({
      *
      * @return void
      */
-    quit:function () {
-        console.log('Goodbye...');
-        if (enyo.isFunction(device.exitApp)) {
-            navigator.device.exitApp();
-        }
-
-        window.close();
+    confirmQuit:function () {
+		this.$.quitDialog.show();
     },
 
 	asyncOperationsRunningChanged: function() {
@@ -197,28 +196,28 @@ enyo.kind({
      * Reloads the settings from localStorage
      */
     reloadSettings:function () {
-
-        var settings = {
-            password:'',
-            drawMode:'simple',
-            allowedPlayTime:20,
-            levelSortMode:'sortByName',
-            maxSessions: 25,
+		var settings = {
+			password:'',
+			drawMode:'simple',
+			allowedPlayTime:20,
+			levelSortMode:'sortByName',
+			maxSessions: 25,
 			maxTolerance: 40
-        };
+		};
 
-        enyo.mixin(settings, enyo.json.parse(localStorage.settings || '{}'));
+		enyo.mixin(settings, enyo.json.parse(localStorage.settings || '{}'));
 
-        this.allowedPlayTime = settings.allowedPlayTime;
+		this.allowedPlayTime = settings.allowedPlayTime;
 
-        if (settings.levelSortMode !== Grundschrift.Models.Level.sortMode) {
-            Grundschrift.Models.Level.sortMode = settings.levelSortMode;
-            this.bubble('onLevelsChanged');
-        }
+		if (settings.levelSortMode !== Grundschrift.Models.Level.sortMode) {
+			Grundschrift.Models.Level.sortMode = settings.levelSortMode;
+			this.bubble('onLevelsChanged', this.levels);
+		}
 
-        this.waterfall('onSettingsLoaded', {
-            settings:settings
-        });
+		this.waterfall('onSettingsLoaded', {
+			settings:settings
+		});
+
     },
 
     /**
@@ -298,14 +297,18 @@ enyo.kind({
 		this.bubble('onAsyncOperationStarted', {background: !!inEvent.background});
 
         Grundschrift.Models.db.levels.toArray(enyo.bind(this, function (levels) {
-            if (enyo.isFunction(Grundschrift.Models.Level[Grundschrift.Models.Level.sortMode])) {
-                levels.sort(Grundschrift.Models.Level[Grundschrift.Models.Level.sortMode]);
-            }
-
-            this.waterfall('onLevelsLoaded', levels);
+			this.setLevels(levels);
+			this.sortLevels();
+            this.waterfall('onLevelsLoaded', this.levels);
             this.bubble('onAsyncOperationFinished', {background: !!inEvent.background});
         }));
     },
+
+	sortLevels: function() {
+		if (this.levels && enyo.isFunction(Grundschrift.Models.Level[Grundschrift.Models.Level.sortMode])) {
+			this.levels.sort(Grundschrift.Models.Level[Grundschrift.Models.Level.sortMode]);
+		}
+	},
 
     /**
      * Return to Child Menu (logout the child)
