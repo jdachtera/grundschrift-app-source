@@ -29,7 +29,8 @@ enyo.kind({
 
         selectedLevel:-1,
 
-        sessionCountMax:5
+        sessionCountMax:5,
+		settings: {}
     },
 
     events:{
@@ -58,6 +59,7 @@ enyo.kind({
             {kind:"FittableRows", style:"width:25%;", components:[
                 {kind:'onyx.Toolbar', classes:'sideBarHeader', components:[
                     {kind:'ImageButton', type:'Exit', ontap:'doBack'},
+					{kind:'ImageButton', name: 'sortModeButton', type: 'sortmode_name', ontap: 'toggleSortMode'},
                     {kind:'ImageButton', name:'rememberMeButton', showing:false, type:'rememberMe', ontap:'rememberMeTap'}
                 ]},
                 {classes:'sideBarContent', fit:true, kind:'FittableRows', components:[
@@ -264,12 +266,10 @@ enyo.kind({
      * @returns void
      */
     levelsChanged:function () {
-        this.bubble('onAsyncOperationStarted');
         enyo.asyncMethod(this, function () {
             this.category = 0;
             this.$.categoryMenu.refresh(this.categories.length);
             this.$.levelGrid.refresh(this.levels.length);
-            this.bubble('onAsyncOperationFinished');
         });
 
     },
@@ -301,12 +301,25 @@ enyo.kind({
     },
 
     settingsLoaded:function (inSender, inEvent) {
+		this.settings = inEvent.settings;
         if (this.sessionCountMax !== inEvent.settings.maxSessions) {
             this.sessionCountMax = inEvent.settings.maxSessions;
             this.setRememberMeShowing();
             this.$.levelGrid.update();
         }
+		this.$.sortModeButton.setType(
+			inEvent.settings.levelSortMode == 'sortByName' ?
+				 'sortmode_group' : 'sortmode_name'
+		);
     },
+
+	toggleSortMode: function() {
+		this.settings.levelSortMode =
+			this.$.sortModeButton.getType() == 'sortmode_name' ?
+				'sortByName' : 'sortByClassName';
+		localStorage['settings'] = enyo.json.stringify(this.settings);
+		this.bubble('onSettingsChanged');
+	},
 
     /**
      * Setups a row for the category menu
