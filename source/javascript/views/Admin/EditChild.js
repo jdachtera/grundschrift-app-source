@@ -34,19 +34,21 @@ enyo.kind({
         {kind:'Scroller', fit:true, components:[
             {kind:'onyx.Groupbox', style: "width: 50%; margin: 10pt auto", components:[
                 {kind: 'onyx.InputDecorator', components:[
-                    {placeholder:'Name', kind:'onyx.Input', name:'name', onkeyup:'keyup'}
+					{content:'Name:', style:'display:inline-block;width:100px'},
+                    {kind:'onyx.Input', name:'name', onkeyup:'keyup'}
                 ]},
                 {kind: 'onyx.InputDecorator', components: [
-                    {kind:'onyx.Checkbox', name:'leftHand', style:'margin-right:3pt'},
-                    {content:'Linkshänder', style:'display:inline;'}
+					{content:'Linkshänder:', style:'display:inline-block;width:100px'},
+                    {kind:'onyx.Checkbox', name:'leftHand', style:'margin-right:3pt'}
+
                 ]},
 
                 {kind: 'onyx.InputDecorator', components:[
-                    {content:'Bild:'},
+                    {content:'Bild:',style:'display:inline-block;width:100px'},
                     {kind:'Grundschrift.Views.CroppedImage', ontap:'childImageTap', style:'width:150pt;height:80pt;border:2px white solid;'}
                 ]},
 				{kind: 'onyx.InputDecorator', components:[
-					{content:'Geschlecht:'},
+					{content:'Geschlecht:', style:'display:inline-block;width:100px'},
 					{kind: "onyx.PickerDecorator", components: [
 						{},
 						{
@@ -68,7 +70,7 @@ enyo.kind({
 					]}
 				]},
 				{kind: 'onyx.InputDecorator', components:[
-					{content:'Gruppe:'},
+					{content:'Gruppe:', style:'display:inline-block;width:100px'},
 					{kind: "onyx.PickerDecorator", components: [
 						{},
 						{
@@ -294,6 +296,7 @@ enyo.kind({
         this.child.password = this.password;
         this.child.imageUrl = this.image;
         this.child.leftHand = this.$.leftHand.getValue();
+		this.child._lastChange = Date.now();
 
 		this.child.save().then(enyo.bind(this, function () {
 			this.bubble('onChildrenChanged');
