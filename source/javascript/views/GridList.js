@@ -1,9 +1,20 @@
+enyo.Scroller.getTouchStrategy = function() {
+	return (enyo.platform.android >= 3) || (enyo.platform.windowsPhone === 8)
+		? "TransitionScrollStrategy"
+		: "TouchScrollStrategy";
+}
+// provide a touch scrolling solution by default when the environment is mobile
+if (enyo.Scroller.hasTouchScrolling()) {
+	enyo.Scroller.prototype.strategyKind = enyo.Scroller.getTouchStrategy();
+}
+
+
 /**
  * A gridList kind based utilizing a Repeater
  */
 enyo.kind({
     name:'Grundschrift.Views.GridList',
-    kind:'Control',
+    kind:'FittableRows',
     classes:'gridListWrapper',
 
     published:{
@@ -24,7 +35,7 @@ enyo.kind({
     itemWidth:200,
 
     components:[
-        {kind:'Scroller', style:'width:100%', components:[
+        {kind:'Scroller', fit: true, style:'width:100%', components:[
             {classes:'gridList', ontap:'cellClick', kind:'Repeater', onSetupItem:'setupItem', components:[
 
             ]}
@@ -50,6 +61,7 @@ enyo.kind({
         //this.initComponents();
         this.inherited(arguments);
     },
+
 
     /**
      * Hacks the components into the repeater.

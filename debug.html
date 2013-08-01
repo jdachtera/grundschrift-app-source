@@ -10,12 +10,20 @@
 		<meta name="apple-mobile-web-app-capable" content="yes"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 
+        <style>
+            html, body {
+                background: black;
+            }
+        </style>
+
         <script>
             var settings = JSON.parse(localStorage.settings || '{}');
             if (settings.isDeveloperMode && settings.weinreHost) {
                 document.write('<scr' +'ipt src="http://' + settings.weinreHost + '/target/target-script-min.js#anonymous"></scr' + 'ipt>');
             }
         </script>
+
+
 
 
         <!-- Less.js (uncomment for client-side rendering of less stylesheets; leave commented to use only CSS) -->

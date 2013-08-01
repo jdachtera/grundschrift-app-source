@@ -221,7 +221,7 @@ enyo.kind({
 
 		enyo.mixin(settings, enyo.json.parse(localStorage.settings || '{}'));
 
-		settings.isDeveloperMode = settings.password === this.$.passwordDialog.getDeveloperPassword();
+		settings.isDeveloperMode = (settings.password === this.$.passwordDialog.getDeveloperPassword());
 
 		this.allowedPlayTime = settings.allowedPlayTime;
 

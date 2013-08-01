@@ -88,7 +88,7 @@ enyo.kind({
                 classes:'levelGrid',
                 onItemTap:'levelTap',
                 rows:0,
-                style:"width:75%",
+                style:"width:75%;height: 100%",
                 minItemWidth:200,
                 components:[
                     {kind:'Grundschrift.Views.LevelMenuItem'}

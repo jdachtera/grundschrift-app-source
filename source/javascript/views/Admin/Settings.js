@@ -20,7 +20,7 @@ enyo.kind({
 						{
 							kind: 'onyx.Input',
 							style: 'width:100%',
-							name:'password', setting:'password', onchange:'setSetting'
+							name:'password', setting:'password', onchange:'setSetting', onkeyup: 'setSetting'
 						}
 					]
 				},
@@ -33,7 +33,7 @@ enyo.kind({
 							{
 								kind: 'onyx.Input',
 								style: 'width:100%',
-								name:'weinreHost', setting:'weinreHost', onchange:'setSetting'
+								name:'weinreHost', setting:'weinreHost', onchange:'setSetting', onkeyup: 'setSetting'
 							}
 						]
 					}
