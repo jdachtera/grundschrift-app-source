@@ -20,16 +20,20 @@ enyo.kind({
         onItemTap: ''
     },
 
+	handlers: {
+		onSettingsLoaded: 'settingsLoaded'
+	},
+
     itemChrome: {
         ontap:'open', classes: 'onyx-menu-item enyo-tool-decorator'
     },
 
     items: [
-        {content: 'Benutzer administrieren', view: 'editChildren'},
+        {content: 'Benutzer verwalten', view: 'editChildren'},
 		{content: 'Gruppen bearbeiten', view: 'editGroups'},
         {content: 'Einstellungen', view: 'settings' },
-        {content: 'Export', view: 'export', showing: !window.GrundschriftIsReleaseMode},
-        {content: 'Buchstaben bearbeiten', view: 'editLevels', showing: !window.GrundschriftIsReleaseMode},
+        {content: 'Export', view: 'export', name: 'export'},
+        {content: 'Buchstaben bearbeiten', view: 'editLevels', name: 'editLevels'},
 		{content: 'Über diese Anwendung', view: 'about'}
     ],
 
@@ -45,6 +49,11 @@ enyo.kind({
             {kind:'Scroller', classes: 'onyx-menu onyx-picker', fit:true}
         ]}
     ],
+
+	settingsLoaded: function(inSender, inEvent) {
+		this.$.editLevels.setShowing(inEvent.settings.isDeveloperMode);
+		this.$.export.setShowing(inEvent.settings.isDeveloperMode);
+	},
 
     create: function() {
         this.inherited(arguments);

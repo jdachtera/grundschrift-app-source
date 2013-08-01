@@ -1,6 +1,7 @@
 enyo.kind({
 	kind:'FittableRows',
 	name:'Grundschrift.Views.Admin.BaseView',
+	classes: 'adminBaseView',
 	handlers: {
 		onBackButton: 'backButton'
 	},

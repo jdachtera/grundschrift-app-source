@@ -570,9 +570,16 @@ enyo.kind({
      */
     moveHandler:function (inSender, inEvent) {
 
+		if (this.aid && this.isDown && this.normalizedLevelPaths[this.currentPath].length > this.currentPoint) {
+			this.addPointToPath(inEvent);
+			return;
+		}
+
         if (this.locked || (inEvent.identifier != this.pointerIdentifier && !inEvent.inDemoMode) ) {
             return true;
         }
+
+
 
         if (!!inEvent.inDemoMode == !!this.inDemoMode) {
             this.inherited(arguments);
@@ -601,7 +608,8 @@ enyo.kind({
         if (this.finished === false &&
             this.currentPath < this.normalizedLevelPaths.length &&
             this.currentPoint < this.normalizedLevelPaths[this.currentPath].length - 1 &&
-            this.currentPoint > 0) {
+            this.currentPoint > 0 &&
+			this.aid !== true) {
 
             if (this.inDemoMode !== true) {
                 this.bubbleUnfinishedSession();

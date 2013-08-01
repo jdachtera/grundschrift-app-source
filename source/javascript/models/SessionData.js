@@ -41,12 +41,12 @@ Grundschrift.Models.SessionData.find = function(id, context, callback) {
 };
 
 Grundschrift.Models.SessionData.remove = function(id, context, callback) {
-	rundschrift.Models.db.SessionData
+	Grundschrift.Models.db.sessionData
 		.filter('id', '==', id)
 		.take(1)
 		.toArray(function(items) {
 			if (items.length) {
-				items[0].delete().then(enyo.bind(context, callback));
+				items[0].remove().then(enyo.bind(context, callback));
 			}
 		});
 };

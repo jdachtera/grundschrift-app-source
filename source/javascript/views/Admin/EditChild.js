@@ -27,12 +27,13 @@ enyo.kind({
     components:[
         {kind:'onyx.Toolbar', style:'height:80px', components:[
             {kind:'ImageButton', type:'Exit', ontap:'doBack'},
-            {kind:"onyx.Button", content:"Statistik", ontap:"statisticsTap"},
+            //{kind:"onyx.Button", content:"Statistik", ontap:"statisticsTap"},
             {kind:"onyx.Button", content:"Speichern", ontap:"saveTap"},
+			{kind:"onyx.Button", content:"Speichern und zum Hauptmenü", ontap:"saveAndToMainMenu"},
             {kind:"onyx.Button", content:"Löschen", ontap:"confirmDelete"}
         ]},
         {kind:'Scroller', fit:true, components:[
-            {kind:'onyx.Groupbox', style: "width: 50%; margin: 10pt auto", components:[
+            {kind:'onyx.Groupbox', style: "width: 50%; margin: 10pt auto; background:#fffafa", components:[
                 {kind: 'onyx.InputDecorator', components:[
 					{content:'Name:', style:'display:inline-block;width:100px'},
                     {kind:'onyx.Input', name:'name', onkeyup:'keyup'}
@@ -154,6 +155,8 @@ enyo.kind({
 	changeGender: function(inSender, inEvent) {
 		if (this.child) {
 			this.child.gender = inEvent.selected.value;
+			this.image = this.child.imageUrl;
+			this.$.croppedImage.setSrc(this.image || 'assets/images/rememberMeBackside' + (this.child.gender == 'f' ? '_f' : '') + '.png');
 		}
 	},
 
@@ -166,7 +169,7 @@ enyo.kind({
     childChanged:function () {
 		if (this.child) {
 			this.image = this.child.imageUrl;
-			this.$.croppedImage.setSrc(this.image || 'assets/images/rememberMeBackside.png');
+			this.$.croppedImage.setSrc(this.image || 'assets/images/rememberMeBackside' + (this.child.gender == 'f' ? '_f' : '') + '.png');
 			this.$.name.setValue(this.child.name);
 			this.$.leftHand.setValue(this.child.leftHand);
 			this.password.length = 0;
@@ -252,13 +255,13 @@ enyo.kind({
      * @returns void
      */
     deleteTap:function () {
-		Grundschrift.Models.db.Sessions
+		Grundschrift.Models.db.sessions
 			.filter('userId', '==', this.child.id)
 			.toArray(enyo.bind(this, function(sessions) {
 				var next = enyo.bind(this, function() {
 					if (sessions.length) {
 						var session = sessions.pop();
-						Grundschrift.Models.SessionData.delete(session.pathsId, this, function() {
+						Grundschrift.Models.SessionData.remove(session.pathsId, this, function() {
 							session.remove().then(next);
 						});
 					} else {
@@ -286,21 +289,31 @@ enyo.kind({
         }
     },
 
+	saveChild: function(context, callback) {
+		this.child.name = this.$.name.getValue();
+		this.child.password = this.password;
+		this.child.imageUrl = this.image;
+		this.child.leftHand = this.$.leftHand.getValue();
+		this.child._lastChange = Date.now();
+		this.child.save().then(enyo.bind(context, callback));
+	},
+
     /**
      * Save button tap handler. Saves the child
      * @protected
      * @returns void
      */
     saveTap:function () {
-        this.child.name = this.$.name.getValue();
-        this.child.password = this.password;
-        this.child.imageUrl = this.image;
-        this.child.leftHand = this.$.leftHand.getValue();
-		this.child._lastChange = Date.now();
-
-		this.child.save().then(enyo.bind(this, function () {
+        this.saveChild(this, function () {
 			this.bubble('onChildrenChanged');
 			this.bubble('onBack');
-		}));
-    }
+		});
+    },
+
+	saveAndToMainMenu: function() {
+		this.saveChild(this, function () {
+			this.bubble('onChildrenChanged');
+			this.bubble('onBackToChildMenu');
+		});
+	}
 });

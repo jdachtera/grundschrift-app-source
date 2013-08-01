@@ -16,6 +16,9 @@ $data.Entity.extend('Grundschrift.Models.Session', {
 	success: {
 		type: Boolean
 	},
+	aid: {
+		type: Boolean
+	},
 	levelId: {
 		type: String
 	},

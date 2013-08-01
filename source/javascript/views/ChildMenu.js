@@ -6,7 +6,6 @@
 enyo.kind({
     name:'Grundschrift.Views.ChildMenu',
     kind:'Grundschrift.Views.BaseView',
-    classes:'childGrid',
 
     events:{
         /**
@@ -17,9 +16,13 @@ enyo.kind({
         onSettingsClicked:''
     },
 
+	backButton: function(inSender, inEvent) {
+		return false;
+	},
+
     components:[
         {kind:'onyx.Toolbar', components:[
-            {kind: 'ImageButton', type: 'application-exit', ontap: 'doBack'},
+            //{kind: 'ImageButton', type: 'application-exit', ontap: 'doBack'},
             {kind:'ImageButton', type:'Settings', ontap:'doSettingsClicked'}
         ]},
         {kind:'Grundschrift.Views.ChildGrid', fit:true, onChildSelected: 'childSelected'}

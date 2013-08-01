@@ -16,6 +16,8 @@ enyo.kind({
          * The name of the child
          */
         name:'',
+
+		gender: '',
         /**
          * The width of the item
          */
@@ -37,7 +39,8 @@ enyo.kind({
      * @returns void
      */
     imageChanged:function () {
-        this.$.image.setSrc(this.image || 'assets/images/rememberMeBackside.png');
+
+		this.$.image.setSrc(this.image || 'assets/images/rememberMeBackside' + (this.gender == 'f' ? '_f' : '') + '.png');
     },
 
     /**
@@ -49,6 +52,7 @@ enyo.kind({
     nameChanged:function () {
         this.$.name.setContent(this.name);
     },
+
 
     /**
      * Triggered when the width is changed

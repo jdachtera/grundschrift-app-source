@@ -15,7 +15,8 @@ enyo.kind({
         playStartTime:0,
 		asyncOperationsRunning: 0,
         allowedPlayTime:1,
-		levels: []
+		levels: [],
+		childs: []
     },
 
     selectedChild:null,
@@ -50,7 +51,7 @@ enyo.kind({
     },
 
     components:[
-		{kind: "enyo.Signals", onbackbutton: "handleBack"},
+		//{kind: "enyo.Signals", onbackbutton: "handleBack"},
 
         {kind: 'Grundschrift.Views.Splash'},
 
@@ -122,21 +123,33 @@ enyo.kind({
 
 			enyo.asyncMethod(this, function() {
 				this.bubble('onAsyncOperationFinished');
-				this.loadingFinishedStack.push(enyo.bind(this, 'openChildMenu'));
+				this.loadingFinishedStack.push(enyo.bind(this, function() {
+					this.$.splash.hideStartScreenImages();
+					if (this.childs.length) {
+						this.openChildMenu()
+					} else {
+						this.openAdminMenu();
+						this.$.adminMenu.addNewChild();
+					}
+				}));
 			});
 
         });
 
 		document.addEventListener("backbutton", enyo.bind(this, function(inEvent){
-			inEvent.preventDefault();
-			inEvent.stopPropagation();
-			this.handleBack();
+			this.handleBack(this, inEvent);
 		}), false);
     },
 
-	handleBack: function() {
+	handleBack: function(inSender, inEvent) {
 		var pane = this.getControls()[this.pane];
-		this.waterfall('onBackButton', {pane: pane})
+		if (pane !== this.$.childMenu) {
+			inEvent.preventDefault();
+			inEvent.stopPropagation();
+			this.waterfall('onBackButton', {pane: pane})
+		} else {
+			navigator.app.exitApp();
+		}
 	},
 
 
@@ -202,10 +215,13 @@ enyo.kind({
 			allowedPlayTime:20,
 			levelSortMode:'sortByName',
 			maxSessions: 25,
-			maxTolerance: 40
+			maxTolerance: 40,
+			weinreHost: ''
 		};
 
 		enyo.mixin(settings, enyo.json.parse(localStorage.settings || '{}'));
+
+		settings.isDeveloperMode = settings.password === this.$.passwordDialog.getDeveloperPassword();
 
 		this.allowedPlayTime = settings.allowedPlayTime;
 
@@ -232,8 +248,7 @@ enyo.kind({
 
 
             Grundschrift.Models.db.users.toArray(enyo.bind(this, function (children) {
-
-
+				this.setChilds(children);
                 this.waterfall('onChildrenLoaded', children);
                 this.bubble('onAsyncOperationFinished', {background: !!inEvent.background});
 

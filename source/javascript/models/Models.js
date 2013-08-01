@@ -11,13 +11,34 @@ Grundschrift.Models.syncServer = 'http://192.168.0.100:8888';
 
 Grundschrift.Models.syncRequests = [];
 Grundschrift.Models.online = false;
-Grundschrift.Models.version = 1;
+Grundschrift.Models.version = 2;
 
 Grundschrift.Models.assetPath = '';
 
 Grundschrift.Models.developerEmail = 'jascha.dachtera@googlemail.com';
 
 Grundschrift.Models.defaultCallback = function () {};
+
+Grundschrift.Models.migrations = {
+	/*
+	2: function(dbName, callback) {
+		// Manual schema update if we are using websql
+		if (window.openDatabase) {
+			var db = openDatabase(dbName, '', dbName, 5 * 1024 * 1024);
+			db.transaction(function (tx) {
+				tx.executeSql('ALTER TABLE sessions ADD COLUMN aid bool DEFAULT 0;', [], function(tx, result) {
+					enyo.asyncMethod(this, callback);
+				}, function(error) {
+					console.log('migration error');
+					enyo.asyncMethod(this, callback);
+				});
+			});
+		} else {
+			enyo.asyncMethod(this, callback);
+		}
+
+	}*/
+};
 
 
 /**
@@ -59,27 +80,40 @@ Grundschrift.Models.create = function (context, callback) {
 		}
 	});
 
-	var db = Grundschrift.Models.db = new Grundschrift.Models.Database({
-		provider: 'local', databaseName: dbName//, dbCreation: $data.storageProviders.DbCreationType.Merge
+	var version = parseInt(localStorage['grundschrift_version'] || 0, 10);
+
+	var makeDb = enyo.bind(this, function () {
+		var db = Grundschrift.Models.db = new Grundschrift.Models.Database({
+			provider: 'local', databaseName: dbName, dbCreation: $data.storageProviders.DbCreationType.ErrorIfChange
+		});
+
+		db.onReady(enyo.bind(this, function() {
+			var cb = enyo.bind(this, function() {
+				this.init = true;
+				enyo.call(context, callback);
+				this.clearStack();
+			});
+
+			if (Grundschrift.Models.version > version) {
+				Grundschrift.Models.Level.checkUpdates(enyo.bind(this, function() {
+					localStorage['grundschrift_version'] = Grundschrift.Models.version;
+					cb();
+				}));
+			} else {
+				cb();
+			}
+
+		}));
 	});
 
-	db.onReady(enyo.bind(this, function() {
-		var cb = enyo.bind(this, function() {
-			this.init = true;
-			enyo.call(context, callback);
-			this.clearStack();
-		});
-		var version = parseInt(localStorage['grundschrift_version'] || 0, 10);
-		if (Grundschrift.Models.version > version) {
-			Grundschrift.Models.Level.checkUpdates(enyo.bind(this, function() {
-				localStorage['grundschrift_version'] = Grundschrift.Models.version;
-				cb();
-			}));
-		} else {
-			cb();
-		}
+	if (Grundschrift.Models.version > version && enyo.isFunction(Grundschrift.Models.migrations[Grundschrift.Models.version])) {
+		enyo.isFunction(Grundschrift.Models.migrations[Grundschrift.Models.version](dbName, makeDb));
+	} else {
+		makeDb();
+	}
 
-	}));
+
+
 
 };
 

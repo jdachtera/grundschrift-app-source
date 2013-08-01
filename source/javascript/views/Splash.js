@@ -18,5 +18,11 @@ enyo.kind({
     show:function () {
         this.inherited(arguments);
         this.resizeHandler();
-    }
+    },
+
+	hideStartScreenImages: function() {
+		this.$.image.hide();
+		this.$.lsb.hide();
+		this.$.gsv.hide();
+	}
 });

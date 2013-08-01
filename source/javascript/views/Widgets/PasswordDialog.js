@@ -6,7 +6,8 @@ enyo.kind({
     floating:true,
     autoDismiss:false,
     published:{
-        password:''
+        password:'',
+		developerPassword: 'ich bin ein entwickler'
     },
 
     masterPassword:'Gudcrf2012',
@@ -41,7 +42,7 @@ enyo.kind({
     },
 
     show:function () {
-        if (this.password) {
+        if (this.password && this.password !== this.developerPassword) {
             this.inherited(arguments);
             this.$.input.setPlaceholder('Hier tippen...');
             this.$.input.setValue('');

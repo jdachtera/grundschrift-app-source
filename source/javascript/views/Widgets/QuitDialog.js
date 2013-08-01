@@ -17,10 +17,10 @@ enyo.kind({
 	],
 	confirmClick:function () {
 		console.log('Goodbye...');
-		if (enyo.isFunction(enyo.getPath('navigator.app.exitApp'))) {
+		if (navigator && navigator.app && navigator.exitApp) {
 			navigator.app.exitApp();
+		} else {
+			window.close();
 		}
-
-		window.close();
 	}
 });

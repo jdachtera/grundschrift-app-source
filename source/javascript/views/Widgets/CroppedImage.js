@@ -26,22 +26,25 @@ enyo.kind({
         this.resizeHandler();
     },
     resizeHandler:function () {
-        var imgNode = this.$.image.hasNode();
-        if (imgNode && imgNode.naturalWidth && imgNode.naturalHeight) {
-            var bounds = this.getBounds();
+		var imgNode
+		setTimeout(enyo.bind(this, function() {
+			if (this.$.image && (imgNode = this.$.image.hasNode()) && imgNode.naturalWidth && imgNode.naturalHeight) {
+				var bounds = this.getBounds();
 
-            if (bounds.height && bounds.width) {
-                var ratioW = bounds.width / imgNode.naturalWidth,
-                    ratioH = bounds.height / imgNode.naturalHeight,
-                    ratio = ratioW > ratioH ? ratioW : ratioH;
+				if (bounds.height && bounds.width) {
+					var ratioW = bounds.width / imgNode.naturalWidth,
+						ratioH = bounds.height / imgNode.naturalHeight,
+						ratio = ratioW > ratioH ? ratioW : ratioH;
 
-                this.$.image.applyStyle('width', imgNode.naturalWidth * ratio + 'px');
-                this.$.image.applyStyle('height', imgNode.naturalHeight * ratio + 'px');
-                this.$.image.applyStyle('margin-top', (imgNode.naturalHeight * ratio - bounds.height) / -2 + 'px');
-                this.$.image.applyStyle('margin-left', (imgNode.naturalWidth * ratio - bounds.width) / -2 + 'px');
-            }
+					this.$.image.applyStyle('width', imgNode.naturalWidth * ratio + 'px');
+					this.$.image.applyStyle('height', imgNode.naturalHeight * ratio + 'px');
+					this.$.image.applyStyle('margin-top', (imgNode.naturalHeight * ratio - bounds.height) / -2 + 'px');
+					this.$.image.applyStyle('margin-left', (imgNode.naturalWidth * ratio - bounds.width) / -2 + 'px');
+				}
 
-        }
-
+			} else {
+				this.resizeHandler();
+			}
+		}), 50);
     }
 });

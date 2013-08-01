@@ -2,6 +2,8 @@ enyo.kind({
     kind:'Grundschrift.Views.Admin.BaseView',
     name:'Grundschrift.Views.Admin.Settings',
 
+	style: 'font-family: Fibel',
+
 	lastUpdateRequest: null,
 
     components:[
@@ -11,17 +13,41 @@ enyo.kind({
             ]},
             {kind: 'Scroller', fit : true, style:'padding: 10px', components: [
                 {tag:'h2', content:'Passwort:'},
-                {kind:'onyx.Input', name:'password', setting:'password', onchange:'setSetting', onkeyup:'setSetting'},
+				{
+					kind: 'onyx.InputDecorator',
+					style: 'background: #fffafa',
+					components: [
+						{
+							kind: 'onyx.Input',
+							style: 'width:100%',
+							name:'password', setting:'password', onchange:'setSetting'
+						}
+					]
+				},
+				{name: 'weinre', components: [
+					{tag: 'h2', content: 'Weinre Debugger Url:'},
+					{
+						kind: 'onyx.InputDecorator',
+						style: 'background: #fffafa',
+						components: [
+							{
+								kind: 'onyx.Input',
+								style: 'width:100%',
+								name:'weinreHost', setting:'weinreHost', onchange:'setSetting'
+							}
+						]
+					}
+				]},
                 {tag:'h2', content:'Rendermodus:'},
                 {kind:'onyx.RadioGroup', components:[
                     {content:'Einfach', name:'simple', setting:'drawMode', active:true, ontap:'setSetting'},
                     {content:'Erweitert', name:'advanced', setting:'drawMode', ontap:'setSetting'}
                 ]},
-                {tag:'h2', content:'Sortierung der Buchstaben:'},
+                /*{tag:'h2', content:'Sortierung der Buchstaben:'},*/
                 {kind:'onyx.RadioGroup', components:[
                     {content:'Nach Bewegungsklasse', name:'sortByClassName', setting:'levelSortMode', active:true, ontap:'setSetting'},
                     {content:'Alphabetisch', name:'sortByName', setting:'levelSortMode', ontap:'setSetting'}
-                ]},
+                ], showing: false},
                 {tag:'h2', content:'Spielzeit pro Kind:'},
                 {kind:'Grundschrift.Views.IntegerSlider', caption:'Minuten', min:0, max:60, name:'allowedPlayTime', setting:'allowedPlayTime', onChange:'setSetting'},
 				{tag:'h2', content:'Erkennungstoleranz:'},
@@ -46,6 +72,8 @@ enyo.kind({
         this.settings = inEvent.settings;
 
         this.$.password.setValue(this.settings.password);
+		this.$.weinreHost.setValue(this.settings.weinreHost);
+		this.$.weinre.setShowing(this.settings.isDeveloperMode);
 
         this.$.simple.setActive(this.settings.drawMode == 'simple');
         this.$.advanced.setActive(this.settings.drawMode == 'advanced');

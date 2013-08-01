@@ -59,7 +59,7 @@ enyo.kind({
             {kind:"FittableRows", style:"width:25%;", components:[
                 {kind:'onyx.Toolbar', classes:'sideBarHeader', components:[
                     {kind:'ImageButton', type:'Exit', ontap:'doBack'},
-					{kind:'ImageButton', name: 'sortModeButton', type: 'sortmode_name', ontap: 'toggleSortMode'},
+					{kind:'ImageButton', name: 'sortModeButton', type: 'sortmode_name', ontap: 'toggleSortMode', showing: false},
                     {kind:'ImageButton', name:'rememberMeButton', showing:false, type:'rememberMe', ontap:'rememberMeTap'}
                 ]},
                 {classes:'sideBarContent', fit:true, kind:'FittableRows', components:[

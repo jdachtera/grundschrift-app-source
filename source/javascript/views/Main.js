@@ -310,6 +310,7 @@ enyo.kind({
 					levelId: this.level.id,
 					userId: this.child.id,
 					success:inEvent.success,
+					aid: this.$.canvas.getAid(),
 					pathsId: z.id,
 					pathsLength: inEvent.paths.length
 				});

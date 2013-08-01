@@ -24,12 +24,12 @@ enyo.kind({
         /**
          * The Edit child view
          */
-        {kind: 'Grundschrift.Views.Admin.EditChild', onBack: 'previous', onOpenStatistics: 'openStatistics'},
+        {kind: 'Grundschrift.Views.Admin.EditChild', onBack: 'previous', onBackToChildMenu: 'backToChildMenu', onOpenStatistics: 'openStatistics'},
 
 		/**
 		 * The Edit child view
 		 */
-		{kind: 'Grundschrift.Views.Admin.EditGroups', onBack: 'openMenu'},
+		{kind: 'Grundschrift.Views.Admin.EditGroups', onBack: 'openMenu', onBackToChildMenu: 'backToChildMenu'},
 
         /**
          * The statistics view
@@ -71,10 +71,19 @@ enyo.kind({
 		}
 	},
 
+	backToChildMenu: function() {
+		this.openMenu();
+		this.bubble('onBack');
+	},
+
     openMenu: function() {
         this.pageName('menu');
         return true;
     },
+
+	addNewChild: function() {
+		this.$.editChildren.addNewChild();
+	},
 
     previous: function() {
         this.inherited(arguments);

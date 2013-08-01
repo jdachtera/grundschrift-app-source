@@ -3,7 +3,7 @@
  */
 enyo.kind({
 	name:'Grundschrift.Views.Admin.EditGroups',
-	kind:'FittableRows',
+	kind:'Grundschrift.Views.Admin.BaseView',
 	published:{
 		/**
 		 * The groups
@@ -38,7 +38,8 @@ enyo.kind({
 				content: 'Speichern',
 				name: 'save',
 				ontap: 'save'
-			}
+			},
+			{kind:"onyx.Button", content:"Speichern und zum Hauptmenü", ontap:"saveAndToMainMenu"},
 		]},
 		{
 			kind: 'Scroller',
@@ -58,6 +59,7 @@ enyo.kind({
 									components: [
 										{
 											kind: 'onyx.InputDecorator',
+											style: 'background: #fffafa',
 											fit:true,
 											components: [
 												{
@@ -89,7 +91,7 @@ enyo.kind({
 		this.setGroups(inGroups);
 	},
 
-	save: function(inSender, inEvent) {
+	saveGroups: function(context, callback) {
 		this.bubble('onAsyncOperationStarted');
 		enyo.forEach(this.groups, function(group) {
 			Grundschrift.Models.db.groups[group.id ? 'attach' : 'add'](group);
@@ -100,11 +102,23 @@ enyo.kind({
 		});
 		this.updateQueue.length = 0;
 
-		Grundschrift.Models.db.groups.saveChanges(enyo.bind(this, function() {
+		Grundschrift.Models.db.groups.saveChanges(enyo.bind(context, callback));
+	},
+
+	save: function() {
+		this.saveGroups(this, function() {
 			this.bubble('onGroupsChanged');
 			this.bubble('onAsyncOperationFinished');
 			this.bubble('onBack');
-		}));
+		});
+	},
+
+	saveAndToMainMenu: function() {
+		this.saveGroups(this, function() {
+			this.bubble('onGroupsChanged');
+			this.bubble('onAsyncOperationFinished');
+			this.bubble('onBackToChildMenu');
+		});
 	},
 
 	remove: function(inSender, inEvent) {

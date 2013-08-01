@@ -5,7 +5,7 @@
 enyo.kind({
     name:'Grundschrift.Views.Admin.EditChildren',
     kind:'Grundschrift.Views.Admin.BaseView',
-    classes:'childGrid',
+
 
     events: {
         onBack: '',
@@ -41,7 +41,7 @@ enyo.kind({
             child: new Grundschrift.Models.User({
                 name:'',
                 password:[1, 1, 1],
-                imageUrl:'assets/images/rememberMeBackside.png'
+                imageUrl: null
             })
         });
     }

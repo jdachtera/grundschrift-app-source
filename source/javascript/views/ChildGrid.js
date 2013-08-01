@@ -5,7 +5,7 @@
  */
 enyo.kind({
 	name:'Grundschrift.Views.ChildGrid',
-	kind:'Grundschrift.Views.BaseView',
+	kind:'FittableRows',
 	classes:'childGrid',
 
 	published:{
@@ -80,7 +80,9 @@ enyo.kind({
 	setupItem:function (inSender, inEvent) {
 		var i = inEvent.index;
 		inEvent.item.$.childItem.setName(this.childs[i].name);
+		inEvent.item.$.childItem.setGender(this.childs[i].gender);
 		inEvent.item.$.childItem.setImage(this.childs[i].imageUrl);
+
 	},
 
 	/**

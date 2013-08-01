@@ -10,7 +10,10 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 
         <script>
-            window.GrundschriftIsReleaseMode = true;
+            var settings = JSON.parse(localStorage.settings || '{}');
+            if (settings.isDeveloperMode && settings.weinreHost) {
+                document.write('<scr' +'ipt src="http://' + settings.weinreHost + '/target/target-script-min.js#anonymous"></scr' + 'ipt>');
+            }
         </script>
 
 
