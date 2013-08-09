@@ -1,4 +1,4 @@
-/**
+﻿/**
  * The sound manager is a global singleton.
  * It loads all the sounds from a json index file and creates Sound objects for each of them.
  */
@@ -25,7 +25,7 @@ enyo.singleton({
         }).response(this,function (inSender, inResponse) {
                 this.index = inResponse;
                 this.init();
-            }).error(console.log).go();
+            }).error(console, console.log).go();
     },
     onDeviceReady: function () {
         this.deviceReady = true;
