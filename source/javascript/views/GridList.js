@@ -1,7 +1,9 @@
 enyo.Scroller.getTouchStrategy = function() {
-	return (enyo.platform.android >= 3) || (enyo.platform.windowsPhone === 8)
-		? "TransitionScrollStrategy"
-		: "TouchScrollStrategy";
+	return (enyo.platform.android >= 3) ? 
+		"TransitionScrollStrategy" 
+		: ((enyo.platform.windowsPhone === 8)
+			? "TranslateScrollStrategy"
+			: "TouchScrollStrategy");
 }
 // provide a touch scrolling solution by default when the environment is mobile
 if (enyo.Scroller.hasTouchScrolling()) {
