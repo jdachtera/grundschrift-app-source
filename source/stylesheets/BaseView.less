@@ -5,7 +5,7 @@
   background: @backgroundColor;
   div.onyx-toolbar {
     background-image: none;
-    background-color: @headerColor;
+    background-color: @blue;
     border: 0px none;
     padding: 4px;
   }
@@ -34,6 +34,33 @@
     background-repeat: repeat-y;
     padding-right: 25px;
   }
+
+  div.sideBarHeader {
+    &.orange {
+      background-color: @orange;
+    }
+    &.red {
+      background-color: @red;
+    }
+    &.green {
+      background-color: @green;
+    }
+    &.blue {
+      background-color: @blue;
+    }
+    &.violet {
+      background-color: @violet;
+    }
+    &.darkblue {
+      background-color: @darkblue;
+    }
+    &.none {
+      background-color: @gridItemBackground;
+    }
+  }
+
+
+
   div.sideBarContent {
     background-color: @blue;
     background-image: url('@{assets-url}/images/sideBarBorder.png');
@@ -77,7 +104,14 @@
       background-position: left top;
       padding-left: @marginWidth;
       padding-right: 0;
-      direction: rtl;
+      //direction: rtl;
+      > * {
+        direction: rtl;
+      }
+    }
+    .numberImage {
+      right: auto;
+      left: 0;
     }
   }
 }

@@ -59,9 +59,11 @@ enyo.kind({
 			{name: 'groupHeader', classes: 'groupHeader'},
             {kind:'Control', name:'container', classes:'gridItemContainer', components:components}
         ];
+
         this.components = [];
         //this.initComponents();
         this.inherited(arguments);
+		this.$.repeater.itemComponents = this.itemComponents;
     },
 
 
@@ -71,9 +73,11 @@ enyo.kind({
      * @returns void
      */
     rendered:function () {
+
         this.inherited(arguments);
-        this.$.repeater.itemComponents = this.itemComponents;
-        this.resize();
+
+		//enyo.asyncMethod(this, 'resize');
+
     },
 
     scrollToTop: function() {
@@ -138,12 +142,17 @@ enyo.kind({
      * @returns void
      */
     setupItem:function (inSender, inEvent) {
-		var group = this.groupFunc(inEvent.index) || {id: '', name: 'Keine Gruppe zugewiesen'};
-		inEvent.item.$.groupHeader.setContent(group.name);
-		inEvent.item.$.groupHeader.setCanGenerate(group.id !== this.lastGroupId);
-		this.lastGroupId = group.id;
-		inEvent.item.$.container.applyStyle('width', this.itemWidth);
-        this.bubble('onSetupItem', inEvent);
+		if(inEvent.item.$.groupHeader) {
+			var group = this.groupFunc(inEvent.index) || {id: '', name: 'Keine Gruppe zugewiesen'};
+			inEvent.item.$.groupHeader.setContent(group.name);
+			inEvent.item.$.groupHeader.setCanGenerate(group.id !== this.lastGroupId);
+			this.lastGroupId = group.id;
+			inEvent.item.$.container.applyStyle('width', this.itemWidth);
+			this.bubble('onSetupItem', inEvent);
+		} else {
+			return true;
+		}
+
     },
 
     /**

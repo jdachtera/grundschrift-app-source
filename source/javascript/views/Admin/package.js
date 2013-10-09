@@ -1,4 +1,5 @@
 enyo.depends(
+	'DbInbox.js',
 	'BaseView.js',
 	'About.js',
     'EditChild.js',

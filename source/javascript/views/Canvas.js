@@ -98,6 +98,8 @@ enyo.kind({
 
         this.$.wrapper.applyStyle('margin-top', (cBounds.height - this.backgroundHeight) / 2 + 'px');
 
+		//this.$.wrapper.applyStyle('height', document.height + 'px');
+
         var bounds = this.$.canvas.getBounds();
 
         this.position = {x:bounds.left, y:bounds.top};

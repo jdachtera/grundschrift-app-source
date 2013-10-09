@@ -40,7 +40,9 @@ enyo.kind({
                 ]},
                 {kind: 'onyx.InputDecorator', components: [
 					{content:'Linkshänder:', style:'display:inline-block;width:100px'},
-                    {kind:'onyx.Checkbox', name:'leftHand', style:'margin-right:3pt'}
+                    {kind:'onyx.Checkbox', name:'leftHand', style:'margin-right:3pt', onchange: 'setLeftHandPathsVisibility'},
+					{content:'Alternative Bewegungsabläufe:', name:'leftHandPathsLabel', style:'display:inline-block;margin: 0 10px'},
+					{kind:'onyx.Checkbox', name:'leftHandPaths', style:'margin-right:3pt'}
 
                 ]},
 
@@ -160,6 +162,12 @@ enyo.kind({
 		}
 	},
 
+	setLeftHandPathsVisibility: function() {
+		this.$.leftHandPaths.setShowing(this.$.leftHand.getValue());
+		this.$.leftHandPathsLabel.setShowing(this.$.leftHand.getValue());
+
+	},
+
 
 	/**
      * Fills the form with the childs properties
@@ -172,6 +180,7 @@ enyo.kind({
 			this.$.croppedImage.setSrc(this.image || 'assets/images/rememberMeBackside' + (this.child.gender == 'f' ? '_f' : '') + '.png');
 			this.$.name.setValue(this.child.name);
 			this.$.leftHand.setValue(this.child.leftHand);
+			this.$.leftHandPaths.setValue(this.child.getPreference('leftHandPaths.default') || false);
 			this.password.length = 0;
 
 			this.$.genderUndefined.setActive(this.child.gender !== 'm' && this.child.gender !== 'f');
@@ -292,6 +301,7 @@ enyo.kind({
 	saveChild: function(context, callback) {
 		this.child.name = this.$.name.getValue();
 		this.child.password = this.password;
+		this.child.setPreference('leftHandPaths.default', this.$.leftHandPaths.getValue() || false);
 		this.child.imageUrl = this.image;
 		this.child.leftHand = this.$.leftHand.getValue();
 		this.child._lastChange = Date.now();

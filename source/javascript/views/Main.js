@@ -2,7 +2,9 @@ enyo.kind({
     name:'Grundschrift.Views.Main',
     kind:'Grundschrift.Views.BaseView',
     classes:'main',
-    layoutKind:'FittableColumnsLayout',
+	style: 'width:100%',
+
+
 
     published:{
         /**
@@ -49,32 +51,36 @@ enyo.kind({
     loadedIllustrations:[],
 
     components:[
-        {kind:'FittableRows', style:'width:25%;', components:[
-            {kind:'onyx.Toolbar', classes:'sideBarHeader', components:[
-                {kind:'ImageButton', type:'Exit', ontap:'doBack'},
-                {kind:'ImageButton', type:'finger', ontap:'startDemo'}
-            ]},
-            {name:'sideBar', fit:true, kind:"FittableRows", classes:"sideBarContent", components:[
-                {kind:'Grundschrift.Views.SessionStars', max:5, size:32, onAnimationEnd:'resetCanvas'},
-                {name:'illustrations', fit:true},
-                {kind:'Scroller', vertical: 'hidden', touchOverscroll: false, classes:'variants', components:[
-                    {name:'variants'}
-                ]}
-            ]}
-        ]},
-        {kind:'Control', style:"width:75%", components:[
-            {kind:'Grundschrift.Views.MainCanvas', name:'canvas',
-                onFinished:'levelFinished',
-                onPlayStart:enyo.bubbler,
-                onPlayStop:enyo.bubbler
-            },
-			{
-				name: 'aidButton',
-				classes: 'aidButton',
-				ontap: 'toggleAid'
-			}
-        ]}
+		{kind: 'FittableColumns', fit: true, components: [
+			{kind:'FittableRows', name: 'controlSide', style:'width:20%;min-width:257px', components:[
+				{kind:'onyx.Toolbar', name: 'sideBarHeader', classes:'sideBarHeader', components:[
+					{kind:'ImageButton', type:'Exit', ontap:'doBack'},
+					{
+						kind: 'ImageButton',
+						type: 'finger',
+						ontap:'startDemo'
 
+					},
+					{kind:'ImageButton', type:'first_aid', name: 'aidButton', classes: 'aidButton', ontap: 'toggleAid'}
+				]},
+				{name:'sideBar', fit:true, kind:"FittableRows", classes:"sideBarContent", components:[
+					{name:'illustrations', fit: true},
+					{kind:'Scroller', vertical: 'hidden', touchOverscroll: false, classes:'variants', components:[
+						{name:'variants'}
+					]}
+				]}
+			]},
+			{kind:'Control', fit: true, name: 'canvasSide', components:[
+				{kind:'Grundschrift.Views.MainCanvas', name:'canvas',
+					onFinished:'levelFinished',
+					onPlayStart:enyo.bubbler,
+					onPlayStop:enyo.bubbler
+				}
+			]},
+			{classes: 'numberImage', name: 'numberImage'},
+			{classes: 'sessionStars', kind:'Grundschrift.Views.SessionStars', max:5, size:32, onAnimationEnd:'resetCanvas', animation: true}
+
+		]},
     ],
 
 	settingsLoaded: function(inSender, inEvent) {
@@ -106,6 +112,7 @@ enyo.kind({
      */
     childChanged:function () {
         this.$.canvas.setChild(this.child);
+		this.setAid(false);
         this.setHandOrientation(this.child.leftHand === true ? 'left' : 'right');
         this.$.canvas.setHandOrientation(this.child.leftHand === true ? 'left' : 'right');
         this.$.sessionStars.setHandOrientation(this.child.leftHand === true ? 'left' : 'right');
@@ -138,6 +145,9 @@ enyo.kind({
 				}
 			})
 		})});
+
+
+		this.applyNumberImages();
 
 		this.$.canvas.setLevel(this.level);
 
@@ -173,12 +183,23 @@ enyo.kind({
 
         enyo.forEach(Grundschrift.Models.Level.classNames, function (levelClass) {
             this.$.sideBar.addRemoveClass(levelClass, this.level.className == levelClass);
+			this.$.sideBarHeader.addRemoveClass(levelClass, this.level.className == levelClass);
         }, this);
 
         this.$.canvas.stopDemo();
 
         this.$.illustrations.render();
     },
+
+	applyNumberImages: function() {
+		if (this.level && this.level.category === 'zahlen') {
+			this.$.numberImage.show();
+			this.$.numberImage.applyStyle('background-image', 'url(' + enyo.macroize('assets/images/Grundschrift_Zahlbilder/Grundschrift_{$name}.png', this.level) + ')');
+
+		} else {
+			this.$.numberImage.hide();
+		}
+	},
 
     variantsChanged:function () {
         this.$.variants.destroyClientControls();
@@ -223,6 +244,7 @@ enyo.kind({
      * @returns void
      */
     resizeHandler:function () {
+		this.$.canvasSide.applyStyle('width', (document.width - this.$.controlSide.getBounds().width) + 'px');
         this.inherited(arguments);
         enyo.asyncMethod(this, 'resizeIllustrations');
     },
@@ -233,6 +255,7 @@ enyo.kind({
      * @returns void
      */
     resizeIllustrations:function () {
+		this.$.numberImage.applyStyle('width', this.$.canvasSide.getBounds().width + 'px');
         var number = this.$.illustrations.children.length;
         if (number > 0) {
 
@@ -296,6 +319,7 @@ enyo.kind({
      */
     levelFinished:function (inSender, inEvent) {
         enyo.asyncMethod(this, function () {
+			var aid = this.$.canvas.getAid();
 
 			this.successHistory += inEvent.success ? 1 : -1;
 			this.successHistory = this.successHistory < -3 ? -3 : (this.successHistory > 0 ? 0 : this.successHistory);
@@ -310,7 +334,7 @@ enyo.kind({
 					levelId: this.level.id,
 					userId: this.child.id,
 					success:inEvent.success,
-					aid: this.$.canvas.getAid(),
+					aid: aid,
 					pathsId: z.id,
 					pathsLength: inEvent.paths.length
 				});
@@ -319,14 +343,21 @@ enyo.kind({
 					if (inEvent.success === true) {
 
 						Grundschrift.Models.SoundManager.play(this.level.name.toString().toLowerCase());
-						this.sessionCount++;
+						var targetBounds = null;
+						if (!aid) {
+							this.sessionCount++;
+						} else {
+							targetBounds = this.$.aidButton.getAbsoluteBounds();
+							targetBounds.left += targetBounds.width / 2;
+							targetBounds.top += targetBounds.height / 2;
+						}
+
 						var lastPoint = {};
 
 						if (inEvent.paths.length > 0 && inEvent.paths[inEvent.paths.length - 1].length > 0) {
 							lastPoint = this.$.canvas.getAbsolutizedPoint(inEvent.paths[inEvent.paths.length - 1][inEvent.paths[inEvent.paths.length - 1].length - 1]);
 						}
-
-						this.$.sessionStars.animateValueChange(this.sessionCount, lastPoint);
+						this.$.sessionStars.animateValueChange(this.sessionCount, lastPoint, targetBounds);
 
 					} else {
 						this.resetCanvas();

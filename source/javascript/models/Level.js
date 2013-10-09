@@ -103,13 +103,19 @@ Grundschrift.Models.Level.sortByName = function (a, b) {
 };
 
 
+Grundschrift.Models.Level.prototype.hasLeftPaths = function() {
+	return this.leftPathsId;
+};
+
+
 /**
  * Get the levels paths
  * @return {String}
  */
-Grundschrift.Models.Level.prototype.getPaths = function (context, callback) {
-	if (this.pathsId) {
-		Grundschrift.Models.LevelData.find(this.pathsId, context, callback);
+Grundschrift.Models.Level.prototype.getPaths = function (context, callback, leftHand) {
+	var id = leftHand ? (this.leftPathsId || this.pathsId) : this.pathsId;
+	if (id) {
+		Grundschrift.Models.LevelData.find(id, context, callback);
 	} else {
 		enyo.asyncMethod(context, callback, []);
 	}
@@ -120,17 +126,31 @@ Grundschrift.Models.Level.prototype.getPaths = function (context, callback) {
  * @param paths
  * @return {*}
  */
-Grundschrift.Models.Level.prototype.setPaths = function(paths, context, callback) {
+Grundschrift.Models.Level.prototype.setPaths = function(paths, context, callback, leftHand) {
 	paths = paths || [];
-    this.pathsLength = paths.length
-	if (this.pathsId) {
-		Grundschrift.Models.LevelData.update(this.pathsId, paths, context, callback);
+	if (leftHand) {
+		this.leftPathsLength = paths.length
+		if (this.leftPathsId) {
+			Grundschrift.Models.LevelData.update(this.leftPathsId, paths, context, callback);
+		} else {
+			Grundschrift.Models.LevelData.create(paths, this, function(z) {
+				this.leftPathsId = z.id;
+				enyo.asyncMethod(context, callback);
+			});
+		}
 	} else {
-		Grundschrift.Models.LevelData.create(paths, this, function(z) {
-			this.pathsId = z.id;
-			enyo.asyncMethod(context, callback);
-		});
+		this.pathsLength = paths.length
+		if (this.pathsId) {
+			Grundschrift.Models.LevelData.update(this.pathsId, paths, context, callback);
+		} else {
+			Grundschrift.Models.LevelData.create(paths, this, function(z) {
+				this.pathsId = z.id;
+				enyo.asyncMethod(context, callback);
+			});
+		}
 	}
+
+
     return this;
 };
 
@@ -177,9 +197,19 @@ Grundschrift.Models.Level.checkUpdates = function (callback, forceReload) {
 														console.log('Saving new level version: ' + jsonLevel.name);
 														var paths = jsonLevel.paths;
 														delete(jsonLevel.paths);
+														var leftPaths = jsonLevel.leftPaths;
+														delete(jsonLevel.leftPaths);
+
 														Grundschrift.Models.db.levels.attach(dbLevel);
 														enyo.mixin(dbLevel, jsonLevel);
-														dbLevel.setPaths(paths, this, next);
+														dbLevel.setPaths(paths, this, function() {
+															if (leftPaths && leftPaths.length) {
+																console.log('It has Leftpaths '+ jsonLevel.name);
+																dbLevel.setPaths(leftPaths, this, next, true);
+															} else {
+																next();
+															}
+														});
 													} else {
 														next();
 													}
@@ -188,9 +218,21 @@ Grundschrift.Models.Level.checkUpdates = function (callback, forceReload) {
 													Grundschrift.Models.LevelData.create(jsonLevel.paths, this, function(z) {
 														jsonLevel.pathsLength = jsonLevel.paths.length;
 														jsonLevel.pathsId = z.id;
-														dbLevel = new Grundschrift.Models.Level(jsonLevel);
-														Grundschrift.Models.db.levels.add(dbLevel);
-														next();
+														var cb = function() {
+															dbLevel = new Grundschrift.Models.Level(jsonLevel);
+															Grundschrift.Models.db.levels.add(dbLevel);
+															next();
+														};
+														if (jsonLevel.leftPaths && jsonLevel.leftPaths.length) {
+															console.log('It has Leftpaths '+ jsonLevel.name);
+															Grundschrift.Models.LevelData.create(jsonLevel.leftPaths, this, function(zl) {
+																jsonLevel.leftPathsLength = jsonLevel.leftPaths.length;
+																jsonLevel.leftPathsId = zl.id;
+																cb();
+															});
+														} else {
+															cb();
+														}
 													});
 												}
 											}));

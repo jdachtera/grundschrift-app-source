@@ -11,13 +11,14 @@ Grundschrift.Models.syncServer = 'http://192.168.0.100:8888';
 
 Grundschrift.Models.syncRequests = [];
 Grundschrift.Models.online = false;
-Grundschrift.Models.version = 2;
+Grundschrift.Models.version = 5;
 
 Grundschrift.Models.assetPath = '';
 
 Grundschrift.Models.developerEmail = 'jascha.dachtera@googlemail.com';
 
 Grundschrift.Models.defaultCallback = function () {};
+
 
 Grundschrift.Models.migrations = {
 	/*
@@ -37,8 +38,27 @@ Grundschrift.Models.migrations = {
 			enyo.asyncMethod(this, callback);
 		}
 
-	}*/
+	},*/
+	4: function(dbName, callback) {
+		// Manual schema update if we are using websql
+		if (window.openDatabase) {
+			var db = openDatabase(dbName, '', dbName, 5 * 1024 * 1024);
+			db.transaction(function (tx) {
+				tx.executeSql('ALTER TABLE users ADD COLUMN preferences TEXT', [], function(tx, result) {
+					enyo.asyncMethod(this, callback);
+				}, function(error) {
+					console.log('migration error');
+					enyo.asyncMethod(this, callback);
+				});
+			});
+		} else {
+			enyo.asyncMethod(this, callback);
+		}
+
+	}
 };
+
+
 
 
 /**

@@ -1,14 +1,12 @@
 @import "variables";
 
 .main {
-  .aidButton {
-    background-image: url('@{assets-url}/icons/first_aid.png');
-    background-size: contain;
-    height: 64px;
-    width: 64px;
+  .demoButton {
     position: absolute;
     right: 10px;
     top: 10px;
+  }
+  .aidButton {
     opacity: 0.5;
     &.active {
       opacity: 1;
@@ -30,6 +28,15 @@
       }
     }
   }
+  .numberImage {
+    position:absolute;
+    bottom:0;
+    height:33%;
+    right:0;
+    background-position:50% 50%;
+    background-repeat:no-repeat;
+    background-size:contain;
+  }
 
   .sideBarContent {
     > div {
@@ -38,7 +45,7 @@
     div.variants{
       margin-left: @marginWidth;
       margin-top: @marginWidth * 2;
-      background-image: url('@{assets-url}/images/greyline.png');
+      //background-image: url('@{assets-url}/images/greyline.png');
       background-repeat: repeat-x;
       background-position: 10pt 66%;
       .wrapper {
@@ -108,6 +115,7 @@
   }
   img.demoFinger {
     position: absolute;
+    z-index: 10;
   }
 }
 

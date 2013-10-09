@@ -38,6 +38,20 @@ enyo.kind({
 						]
 					}
 				]},
+				{name: 'dbInbox', components: [
+					{tag: 'h2', content: 'DbInbox name'},
+					{
+						kind: 'onyx.InputDecorator',
+						style: 'background: #fffafa',
+						components: [
+							{
+								kind: 'onyx.Input',
+								style: 'width:100%',
+								name:'dbInboxName', setting:'dbInboxName', onchange:'setSetting', onkeyup: 'setSetting'
+							}
+						]
+					}
+				]},
                 {tag:'h2', content:'Rendermodus:'},
                 {kind:'onyx.RadioGroup', components:[
                     {content:'Einfach', name:'simple', setting:'drawMode', active:true, ontap:'setSetting'},
@@ -74,6 +88,8 @@ enyo.kind({
         this.$.password.setValue(this.settings.password);
 		this.$.weinreHost.setValue(this.settings.weinreHost);
 		this.$.weinre.setShowing(this.settings.isDeveloperMode);
+		this.$.dbInbox.setShowing(this.settings.isDeveloperMode);
+		this.$.dbInboxName.setValue(this.settings.dbInboxName);
 
         this.$.simple.setActive(this.settings.drawMode == 'simple');
         this.$.advanced.setActive(this.settings.drawMode == 'advanced');

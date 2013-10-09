@@ -1,10 +1,10 @@
 @import "../variables";
 
 .sessionStars {
-  .wrapper {
+  /*.wrapper {*/
     display: inline-block;
     direction: ltr;
-  }
+  /*}*/
   .enabled, .disabled {
     height: 16px;
     display: inline-block;
@@ -14,4 +14,14 @@
   .disabled {
     opacity: 0.3;
   }
+}
+
+.main .sessionStars {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+.main.leftHand .sessionStars {
+  right: auto;
+  left: 10px;
 }

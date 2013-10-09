@@ -9,6 +9,13 @@ enyo.kind({
     events: {
         onBack: ''
     },
+	handlers:{
+		onSettingsLoaded:'settingsLoaded'
+	},
+	dbInboxName: 'gs',
+	settingsLoaded: function(inSender, inEvent) {
+		this.dbInboxName = inEvent.settings.dbInboxName;
+	},
     components:[
         {kind:'onyx.Toolbar', defaultKind:'onyx.Button', style:'height:80px', components:[
 
@@ -23,10 +30,14 @@ enyo.kind({
             {content:'Export', ontap:'exportButtonClick'},
             //{content:'Import', ontap:'importButtonClick'},
 
-            {content:'Send', ontap:'sendEmail'},
+			//{content:'Upload', ontap:'sendToDbInbox'},
+            //{content:'Send', ontap:'sendEmail'},
             {content:'Reset Levels', ontap:'resetLevels'}
         ]},
-        {kind: 'onyx.InputDecorator', style: 'width: 100%', fit: true, components: [
+
+		{fit: true, style: 'width: 100%; padding: 20px; font-family: Courier', name: 'messages'},
+
+        {kind: 'onyx.InputDecorator', style: 'width: 100%', fit: true, showing: false, components: [
             {kind: 'onyx.TextArea', style:'height:100%;width:100%', name:'exportContainer'}
         ]}
     ],
@@ -38,6 +49,13 @@ enyo.kind({
      * @return void
      */
     exportButtonClick:function (inSender) {
+
+		this.$.exportContainer.setValue('');
+
+		this.$.messages.destroyClientControls();
+		this.$.messages.createComponent({content: 'Exporting...'});
+		this.$.messages.render();
+
 		var data = {}, counter = 0;
 
 		var cb = enyo.bind(this, function() {
@@ -89,8 +107,31 @@ enyo.kind({
      */
     setExportData:function (data) {
         this.$.exportContainer.setValue(enyo.json.stringify(data, undefined, 2));
-        this.resized();
+        //this.resized();
+		this.$.messages.createComponent({content: 'Export finished.'});
+		this.$.messages.createComponent({content: 'Uploading...'});
+		this.$.messages.render();
+		this.sendToDbInbox();
     },
+
+	sendToDbInbox: function() {
+		var request = new DbInbox({url: 'http://dbinbox.com/send/' + this.dbInboxName + '/', iframe: true /*window.device.platform == 'browser'*/});
+
+		request.go({
+			filename: Date.now() + '_Grundschrift_Export.json' ,
+			message: this.$.exportContainer.getValue()
+		});
+
+		request.response(this, function() {
+			this.$.messages.createComponent({content: 'Upload finished.'});
+			this.$.messages.render();
+		});
+
+		request.error(this, function() {
+			this.$.messages.createComponent({content: 'Upload failed.'});
+			this.$.messages.render();
+		});
+	},
 
     /**
      * Sends an email with the contents of the export container

@@ -17,5 +17,7 @@ function onLoad() {
 
 function onDeviceReady() {
     navigator.window.setFullScreen(true);
-    window.app = new Grundschrift.App().renderInto(document.body);
+    window.app = new Grundschrift.App().renderInto(document.getElementById('app'));
 }
+
+

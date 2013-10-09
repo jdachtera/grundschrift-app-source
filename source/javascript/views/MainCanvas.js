@@ -91,7 +91,6 @@ enyo.kind({
     },
 
     sensitivityChanged:function () {
-
         if (this.level) {
             console.log('Recomputing level paths due to sensitivity change. Sensitivity: ' + this.sensitivity);
             this.levelChanged();
@@ -99,7 +98,21 @@ enyo.kind({
     },
 
     levelChanged:function () {
-        this.inherited(arguments);
+		// no inherited call to enable leftHand backgrounds
+		var leftHandMode =
+				this.child.leftHand &&
+				(this.child.getPreference('leftHandPaths.' + this.level.id) || this.child.getPreference('leftHandPaths.default')) &&
+					this.level.hasLeftPaths();
+
+		if (this.level.name) {
+			var path = enyo.macroize('assets/levels/{$category}/{$name}/background' + (leftHandMode ? '_left' : '') + '.png', this.level);
+			// Resolve absolute image url first to avoid a loading / resized loop
+			var img = document.createElement('img');
+			img.src = path;
+			if (img.src !== this.image.src) {
+				this.image.src = img.src;
+			}
+		}
 
         this.levelPaths.length = 0;
         this.anchorPoints.length = 0;
@@ -127,8 +140,9 @@ enyo.kind({
 
 
 				this.anchorPoints = this.getAnchorPoints();
+				this.reset();
 				this.bubble('onAsyncOperationFinished');
-			});
+			}, leftHandMode);
 
         } else {
 			this.reset();
@@ -326,6 +340,7 @@ enyo.kind({
         this.inDemoMode = true;
         this.$.demoAnimator.path = -1;
         this.demoDoBetweenPaths(this.$.demoAnimator);
+		enyo.dom.addClass(enyo.dom.byId('gs-app'), 'no-overflow');
     },
 
     /**
@@ -338,6 +353,7 @@ enyo.kind({
         this.$.demoAnimator.stop();
         this.$.demoFinger.hide();
         this.reset();
+		enyo.dom.removeClass(enyo.dom.byId('gs-app'), 'no-overflow');
     },
 
     /**
@@ -569,17 +585,16 @@ enyo.kind({
      * @return void
      */
     moveHandler:function (inSender, inEvent) {
-
+		if (inEvent && inEvent.preventDefault) {
+			inEvent.preventDefault();
+		}
 		if (this.aid && this.isDown && this.normalizedLevelPaths[this.currentPath].length > this.currentPoint) {
 			this.addPointToPath(inEvent);
 			return;
 		}
-
         if (this.locked || (inEvent.identifier != this.pointerIdentifier && !inEvent.inDemoMode) ) {
             return true;
         }
-
-
 
         if (!!inEvent.inDemoMode == !!this.inDemoMode) {
             this.inherited(arguments);

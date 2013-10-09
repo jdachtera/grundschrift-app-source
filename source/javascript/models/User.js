@@ -22,6 +22,9 @@ $data.Entity.extend('Grundschrift.Models.User', {
 	},
 	groupId: {
 		type: String
+	},
+	preferences: {
+		type: String
 	}
 });
 
@@ -46,5 +49,25 @@ Grundschrift.Models.User.export = function(context, callback) {
 		next();
 	});
 };
+Grundschrift.Models.User.prototype.parsePreferences = function() {
+	if (!this.hasOwnProperty('_preferences')) {
+		try {
+			this._preferences = enyo.json.parse(this.preferences) || {};
+		} catch(e) {
+			this._preferences = {};
+		}
+	}
+};
+Grundschrift.Models.User.prototype.getPreference = function(key) {
+	this.parsePreferences();
+	return this._preferences[key];
+};
+Grundschrift.Models.User.prototype.setPreference = function(key, value) {
+	this.parsePreferences();
+	this._preferences[key] = value;
+	this.preferences = enyo.json.stringify(this._preferences);
+};
+
+
 
 

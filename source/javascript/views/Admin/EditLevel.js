@@ -20,6 +20,13 @@ enyo.kind({
 
         onControlValuesChanged:''
     },
+	handlers:{
+		onSettingsLoaded:'settingsLoaded'
+	},
+	dbInboxName: 'gs',
+	settingsLoaded: function(inSender, inEvent) {
+		this.dbInboxName = inEvent.settings.dbInboxName;
+	},
 
     components:[
     /**
@@ -49,7 +56,7 @@ enyo.kind({
             {kind:'onyx.Toolbar', defaultKind:'ImageButton', components:[
                 {type:'edit-delete', ontap:'deleteActivePath'},
                 {type:'document-save-5', ontap:'savePaths'},
-                {type:'document-send', ontap:'sendToDeveloper'}
+                {type:'document-send', ontap:'sendToDbInbox'}
             ]}
 
 
@@ -165,24 +172,55 @@ enyo.kind({
             this.bubble('onLevelsChanged');
             this.bubble('onBack');
 
-            window.open(
+            var link =
                 'mailto:' + Grundschrift.Models.developerEmail +
                     '?subject=' + encodeURIComponent('[Grundschrift Level] ' + level.category + ' => ' + level.name) +
                     '&body=' + encodeURIComponent(enyo.json.stringify({
-                    "id":level.id,
-                    "name":level.name,
-                    "category":level.category,
-                    "illustrations":level.illustrations,
-                    "className":level.className,
-                    "unlockCondition":level.unlockCondition,
-                    "lineWidth":level.lineWidth,
-                    "_lastChange":level._lastChange,
-                    "paths": this.$.editCanvas.getPaths()
-                }, undefined, 2))
-            );
+						"id": level.id,
+						"name": level.name,
+						"category":level.category,
+						"illustrations":level.illustrations,
+						"className":level.className,
+						"unlockCondition":level.unlockCondition,
+						"lineWidth":level.lineWidth,
+						"_lastChange":level._lastChange,
+						"paths": this.$.editCanvas.getPaths()
+               	 	}, undefined, 2))
+            ;
+
+			location.href = link;
 
         }));
     },
+
+	sendToDbInbox: function() {
+		var request = new DbInbox({url: 'http://dbinbox.com/send/' + this.dbInboxName + '/', iframe: true /*window.device.platform == 'browser'*/});
+
+		var level = this.$.editCanvas.getLevel();
+
+		request.go({
+			filename: Date.now() + '_Grundschrift_Level-' + level.category + '_' + level.name + '.json',
+			message: enyo.json.stringify({
+				"id": level.id,
+				"name": level.name,
+				"category":level.category,
+				"illustrations":level.illustrations,
+				"className":level.className,
+				"unlockCondition":level.unlockCondition,
+				"lineWidth":level.lineWidth,
+				"_lastChange":level._lastChange,
+				"paths": this.$.editCanvas.getPaths()
+			}, undefined, 2)
+		});
+
+		request.response(function() {
+			alert('Upload finished');
+		});
+
+		request.error(function() {
+			alert('Upload failed');
+		});
+	},
 
     applyModifications:function () {
         this.$.editCanvas.applyModifications();

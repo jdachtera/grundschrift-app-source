@@ -9,6 +9,7 @@ enyo.kind({
     name:'Grundschrift.App',
     kind:'Book',
     classes:'enyo-fit',
+	id: 'gs-app',
 
 
     published:{
@@ -216,7 +217,8 @@ enyo.kind({
 			levelSortMode:'sortByName',
 			maxSessions: 25,
 			maxTolerance: 40,
-			weinreHost: ''
+			weinreHost: '',
+			dbInboxName: 'gs'
 		};
 
 		enyo.mixin(settings, enyo.json.parse(localStorage.settings || '{}'));

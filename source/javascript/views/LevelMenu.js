@@ -56,7 +56,7 @@ enyo.kind({
     components:[
         {kind:'FittableColumns', fit:true, components:[
 
-            {kind:"FittableRows", style:"width:25%;", components:[
+            {kind:"FittableRows", style:'width:20%;min-width:257px', components:[
                 {kind:'onyx.Toolbar', classes:'sideBarHeader', components:[
                     {kind:'ImageButton', type:'Exit', ontap:'doBack'},
 					{kind:'ImageButton', name: 'sortModeButton', type: 'sortmode_name', ontap: 'toggleSortMode', showing: false},
@@ -88,7 +88,8 @@ enyo.kind({
                 classes:'levelGrid',
                 onItemTap:'levelTap',
                 rows:0,
-                style:"width:75%;height: 100%",
+				fit: true,
+                style:"height: 100%",
                 minItemWidth:200,
                 components:[
                     {kind:'Grundschrift.Views.LevelMenuItem'}
@@ -114,6 +115,17 @@ enyo.kind({
         this.setCategory(0);
         this.bubble('onSessionsChanged');
     },
+
+	resizeHandler: function() {
+		this.$.levelGrid.applyStyle('width', null);
+		this.inherited(arguments);
+	},
+
+	handOrientationChanged: function() {
+		enyo.asyncMethod(this, function() {
+			this.resized();
+		});
+	},
 
     levelsLoaded:function (inSender, inLevels) {
         this.setLevels(inLevels);
@@ -411,6 +423,11 @@ enyo.kind({
             var variants = [];
             enyo.forEach(this.levels, function (l) {
                 if (level != l && this.isLevelUnlocked(l)) {
+					if (level.category === 'zahlen' && l.category == 'zahlen') {
+						variants.push(l);
+						return;
+					}
+
                     var l1Chars = l.name.toString().split("_").shift().toLowerCase().split(""),
                         l2Chars = level.name.toString().split("_").shift().toLowerCase().split("");
 

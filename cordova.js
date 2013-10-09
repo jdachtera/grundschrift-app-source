@@ -10,7 +10,3 @@ window.setTimeout(function() {
     e.initEvent("deviceready", true, true);
     document.dispatchEvent(e);
 }, 250);
-
-
-
-
