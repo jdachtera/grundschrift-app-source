@@ -1,0 +1,45 @@
+{
+  "id": "8367D2A1-DF63-4C45-84E8-7D6EC31C84F3",
+  "name": "N",
+  "category": "GROSSBUCHSTABEN",
+  "className": "orange",
+  "_lastChange": 1374603936256,
+  "illustrations": [
+    "Nase",
+    "Nest"
+  ],
+  "unlockCondition": "",
+  "lineWidth": 56,
+  "paths": [
+    [
+      {
+        "x": 28.775000000000002,
+        "y": 78.7,
+        "isAnchor": true
+      },
+      {
+        "x": 26.647972972972976,
+        "y": 505.16891891891896,
+        "isAnchor": true,
+        "index": 41
+      }
+    ],
+    [
+      {
+        "x": 26.263297872340416,
+        "y": 75.35106382978724,
+        "isAnchor": true
+      },
+      {
+        "x": 309.876329787234,
+        "y": 505.4800531914894
+      },
+      {
+        "x": 303.59707446808505,
+        "y": 77.44414893617021,
+        "isAnchor": true,
+        "index": 285
+      }
+    ]
+  ]
+}

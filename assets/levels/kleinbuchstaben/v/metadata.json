@@ -1,0 +1,31 @@
+{
+  "id": "DAB92DE8-9F2A-4795-AD01-989E077916D0",
+  "name": "v",
+  "category": "kleinbuchstaben",
+  "className": "orange",
+  "_lastChange": 1374603936256,
+  "illustrations": [
+    "verstecken",
+    "vier"
+  ],
+  "unlockCondition": "",
+  "lineWidth": 43,
+  "paths": [
+    [
+      {
+        "x": 28.974431818181824,
+        "y": 283.62662337662334,
+        "isAnchor": true
+      },
+      {
+        "x": 144.59699675324674,
+        "y": 500.8181818181818
+      },
+      {
+        "x": 257.0255681818182,
+        "y": 285.54301948051943,
+        "isAnchor": true
+      }
+    ]
+  ]
+}

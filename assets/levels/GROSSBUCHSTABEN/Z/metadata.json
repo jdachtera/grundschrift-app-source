@@ -1,0 +1,38 @@
+{
+  "id": "8FD7D3CF-3315-4B84-8F54-1E32CB2F0C5A",
+  "name": "Z",
+  "category": "GROSSBUCHSTABEN",
+  "className": "violet",
+  "_lastChange": 1374603936256,
+  "illustrations": [
+    "Zange",
+    "Zebra",
+    "Zelt"
+  ],
+  "unlockCondition": "",
+  "lineWidth": 51,
+  "paths": [
+    [
+      {
+        "x": 25.567567567567547,
+        "y": 79.76351351351352,
+        "isAnchor": true
+      },
+      {
+        "x": 389.2891891891892,
+        "y": 79.76351351351352,
+        "isAnchor": true
+      },
+      {
+        "x": 31.94864864864863,
+        "y": 504.1054054054054,
+        "isAnchor": true
+      },
+      {
+        "x": 399.92432432432435,
+        "y": 505.16891891891896,
+        "isAnchor": true
+      }
+    ]
+  ]
+}

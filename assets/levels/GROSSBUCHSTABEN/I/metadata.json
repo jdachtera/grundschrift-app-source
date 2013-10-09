@@ -1,0 +1,27 @@
+{
+  "id": "3950FD67-67F1-4EC7-89DB-9E2412EDAF57",
+  "name": "I",
+  "category": "GROSSBUCHSTABEN",
+  "className": "darkblue",
+  "_lastChange": 1374603936256,
+  "illustrations": [
+    "Igel",
+    "Indianer"
+  ],
+  "unlockCondition": "",
+  "lineWidth": 43,
+  "paths": [
+    [
+      {
+        "x": 26.90472972972973,
+        "y": 75.50945945945946,
+        "isAnchor": true
+      },
+      {
+        "x": 33.285810810810815,
+        "y": 509.422972972973,
+        "isAnchor": true
+      }
+    ]
+  ]
+}

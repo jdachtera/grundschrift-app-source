@@ -1,0 +1,32 @@
+{
+  "id": "93B38DCD-9453-4207-89DE-3925227EEA5E",
+  "name": "L",
+  "category": "GROSSBUCHSTABEN",
+  "className": "red",
+  "_lastChange": 1374603936256,
+  "illustrations": [
+    "Lampe",
+    "Leiter",
+    "Löwe"
+  ],
+  "unlockCondition": "",
+  "lineWidth": 39,
+  "paths": [
+    [
+      {
+        "x": 23.778814935064947,
+        "y": 79.84983766233766,
+        "isAnchor": true
+      },
+      {
+        "x": 28.889204545454557,
+        "y": 505.9285714285714
+      },
+      {
+        "x": 231.38839285714286,
+        "y": 505.2897727272727,
+        "isAnchor": true
+      }
+    ]
+  ]
+}

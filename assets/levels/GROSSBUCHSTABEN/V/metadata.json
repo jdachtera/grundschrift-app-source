@@ -1,0 +1,35 @@
+{
+  "id": "9AB16BB5-AF93-4242-8674-918A56637452",
+  "name": "V",
+  "category": "GROSSBUCHSTABEN",
+  "className": "orange",
+  "_lastChange": 1374603936256,
+  "illustrations": [
+    "Vase",
+    "Vogel"
+  ],
+  "unlockCondition": "",
+  "lineWidth": 53,
+  "paths": [
+    [
+      {
+        "x": 29.58843085106382,
+        "y": 78.49069148936171,
+        "isAnchor": true
+      },
+      {
+        "x": 73.54321808510637,
+        "y": 178.9587765957447
+      },
+      {
+        "x": 177.15093085106383,
+        "y": 510.71276595744683
+      },
+      {
+        "x": 337.27194148936167,
+        "y": 79.5372340425532,
+        "isAnchor": true
+      }
+    ]
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "id": "B4A97F0C-ECF2-433B-8E6A-8EC5A6C8928F",
+  "name": "T",
+  "category": "GROSSBUCHSTABEN",
+  "className": "red",
+  "_lastChange": 1380048921773,
+  "illustrations": [
+    "Tasse",
+    "Tisch",
+    "Turm"
+  ],
+  "unlockCondition": "",
+  "lineWidth": 53,
+  "paths": [
+    [
+      {
+        "x": 174.80252659574467,
+        "y": 82.67686170212767,
+        "isAnchor": true
+      },
+      {
+        "x": 177.94215425531914,
+        "y": 500.24734042553195,
+        "isAnchor": true,
+        "index": 126
+      }
+    ],
+    [
+      {
+        "x": 36.65890957446808,
+        "y": 73.25797872340425,
+        "isAnchor": true
+      },
+      {
+        "x": 305.62034574468083,
+        "y": 75.35106382978724,
+        "isAnchor": true,
+        "index": 79
+      }
+    ]
+  ],
+	"leftPaths": [
+		[
+			{
+				"x": 174.80252659574467,
+				"y": 82.67686170212767,
+				"isAnchor": true
+			},
+			{
+				"x": 177.94215425531914,
+				"y": 500.24734042553195,
+				"isAnchor": true,
+				"index": 126
+			}
+		],
+		[
+			{
+				"x": 309.8065159574468,
+				"y": 73.25797872340425,
+				"isAnchor": true
+			},
+			{
+				"x": 29.333111702127656,
+				"y": 72.21143617021276,
+				"isAnchor": true
+			}
+		]
+	]
+}
