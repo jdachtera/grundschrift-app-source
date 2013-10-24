@@ -73,7 +73,7 @@ enyo.kind({
                         onSetupItem:'categorySetupItem',
                         classes:'categoryMenu',
                         components:[
-                            {name:'categoryMenuItem', components:[
+                            {name:'categoryMenuItem', classes: 'categoryMenuItem', components:[
                                 {kind:'Image', name:'categoryImage'}
                             ]}
                         ]
@@ -249,6 +249,7 @@ enyo.kind({
      */
     categoryChanged:function () {
         this.$.levelGrid.update();
+		this.$.categoryMenu.update();
         this.$.levelGrid.scrollToTop();
         this.setRememberMeShowing();
     },
@@ -343,6 +344,9 @@ enyo.kind({
     categorySetupItem:function (inSender, inEvent) {
         var i = inEvent.index, row = inEvent.item;
         row.$.categoryImage.setSrc('assets/levels/' + this.categories[i] + '/category.png');
+		row.$.categoryMenuItem.addRemoveClass('active', i == this.category);
+
+
     },
 
     /**

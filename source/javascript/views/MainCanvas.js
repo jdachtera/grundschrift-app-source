@@ -786,13 +786,6 @@ enyo.kind({
             y:inEvent.pageY - this.position.y
         });
 
-        /*
-         var position = {
-         x: (inEvent.pageX - this.position.x) * this.backgroundScale + this.backgroundOffsetX,
-         y: (inEvent.pageY - this.position.y) * this.backgroundScale + this.backgroundOffsetY
-         };
-         */
-
         // Add the timestamp (not builtin on Android)
         if (inEvent.timeStamp instanceof Date) {
             position.timestamp = inEvent.timeStamp.getTime();

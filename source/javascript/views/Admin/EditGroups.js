@@ -40,6 +40,7 @@ enyo.kind({
 				ontap: 'save'
 			},
 			{kind:"onyx.Button", content:"Speichern und zum Hauptmenü", ontap:"saveAndToMainMenu"},
+			{classes: "view-heading", content: "Gruppen bearbeiten"}
 		]},
 		{
 			kind: 'Scroller',

@@ -34,7 +34,8 @@ enyo.kind({
      */
         {kind:'FittableRows', style:'width:25%', components:[
             {kind:'onyx.Toolbar', components:[
-                {kind:'ImageButton', type:'application-exit', ontap:'doBack'}
+                {kind:'ImageButton', type:'application-exit', ontap:'doBack'},
+				{classes: "view-heading", content: "Level bearbeiten"}
             ]},
             {kind:'Scroller', style:'margin:10px', fit:true, components:[
                 {name:'currentPath', caption:'Pfad:', disabled:true, kind:"Grundschrift.Views.IntegerSlider", min:-1, max:-1, value:-1, onChange:"publishValues"},

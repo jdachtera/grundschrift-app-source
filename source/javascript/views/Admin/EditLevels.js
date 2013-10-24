@@ -27,7 +27,8 @@ enyo.kind({
 
     components:[
         {kind:'onyx.Toolbar', style:'height:80px', components:[
-            {kind:'ImageButton', type:'Exit', ontap:'doBack'}
+            {kind:'ImageButton', type:'Exit', ontap:'doBack'},
+			{classes: "view-heading", content: "Levels bearbeiten"}
         ]},
         {kind:'Grundschrift.Views.GridList',
             name:'levelsList',

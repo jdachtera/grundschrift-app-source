@@ -32,7 +32,8 @@ enyo.kind({
     components:[
         {kind:"FittableRows", style:"width:33%", components:[
             {kind:"onyx.Toolbar", style:"height:80px", components:[
-                {kind:'ImageButton', type:'Exit', ontap:'doBack'}
+                {kind:'ImageButton', type:'Exit', ontap:'doBack'},
+				{classes: "view-heading", content: "Statistik"}
             ]},
             {name:"sessionTree", kind:"Scroller", fit:true}
 

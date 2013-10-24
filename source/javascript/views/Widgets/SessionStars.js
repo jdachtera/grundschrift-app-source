@@ -6,20 +6,17 @@
 enyo.kind({
     name:'Grundschrift.Views.SessionStars',
     published:{
-        max:25,
-        value:0,
-        divisor:5,
-        size:16,
-        handOrientation:'right',
+        max: 25,
+        value: 0,
+        divisor: 5,
+        size: 24,
+        handOrientation: 'right',
 		animation: false
     },
     classes:'sessionStars',
     components:[
-        //{name:'wrapper', classes:'wrapper', components:[
-            {name:'enabled', classes:"enabled", kind:'Control'},
-            {name:'disabled', classes:"disabled", kind:'Control'}
-        //]}
-		,
+		{name:'enabled', classes:"enabled", kind:'Control'},
+		{name:'disabled', classes:"disabled", kind:'Control'},
         {kind:'Animator', duration:1500, easingFunc:enyo.easing.cubicOut, startValue:0, endValue:100, onStep:'animationStep', onEnd:'animationEnd'},
         {kind:'Image', name:'animatedImage', showing:false, src:'assets/icons/Star_04.png', canGenerate: false}
     ],
@@ -46,6 +43,7 @@ enyo.kind({
         this.setMax(inEvent.settings.maxSessions);
     },
     sizeChanged:function () {
+		this.applyStyle('height', this.size + 'px');
         this.$.enabled.applyStyle('height', this.size + 'px');
         this.$.disabled.applyStyle('height', this.size + 'px');
         this.$.enabled.applyStyle('background-size', this.size + 'px ' + this.size + 'px');
@@ -100,16 +98,9 @@ enyo.kind({
 			opacity:0
 		};
 
-
-
 		this.$.animatedImage.applyStyle("left", "0px");
 		this.$.animatedImage.applyStyle("top", "0px");
 		var imgBounds = this.$.animatedImage.getBounds();
-
-		if (this.handOrientation === 'right') {
-			//this.startBounds.left *= -1;
-			//this.startBounds.left += imgBounds.left / 2;
-		}
 
 		for (var k in this.startBounds) {
 			this.$.animatedImage.applyStyle(k, this.startBounds[k]);
@@ -136,8 +127,6 @@ enyo.kind({
 
 		styles.top -= styles.height / 2;
 		styles.left -= styles.width / 2;
-
-		console.log(styles.top, styles.left, this.startBounds.top, this.startBounds.left);
 
         var appendPx = {top: true, left: true, width: true, height: true};
 

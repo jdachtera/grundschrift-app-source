@@ -32,7 +32,8 @@ enyo.kind({
 
 			//{content:'Upload', ontap:'sendToDbInbox'},
             //{content:'Send', ontap:'sendEmail'},
-            {content:'Reset Levels', ontap:'resetLevels'}
+            {content:'Reset Levels', ontap:'resetLevels'},
+			{classes: "view-heading", content: "Export"}
         ]},
 
 		{fit: true, style: 'width: 100%; padding: 20px; font-family: Courier', name: 'messages'},

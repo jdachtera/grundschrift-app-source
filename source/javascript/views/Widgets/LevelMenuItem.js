@@ -13,12 +13,13 @@ enyo.kind({
     },
 
     components:[
-        {classes:'caption', components:[
-            {name:'image', kind:'Image'}
-        ]},
-        {classes:'starsWrapper', components:[
-            {kind:'Grundschrift.Views.SessionStars'}
-        ]}
+        //{classes:'caption', components:[
+			{name:'image', kind:'Image', classes: 'levelImage'},
+			{classes: 'colorStripe'},
+        //]},
+        //{classes:'starsWrapper', components:[
+            {kind:'Grundschrift.Views.SessionStars', size: 26}
+        //]}
 
     ],
 

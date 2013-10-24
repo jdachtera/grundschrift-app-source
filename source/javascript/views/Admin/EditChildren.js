@@ -15,7 +15,8 @@ enyo.kind({
     components:[
         {kind:'onyx.Toolbar', style:'height:80px', components:[
             {kind:'ImageButton', type:'Exit', ontap:'doBack'},
-            {kind:'onyx.Button', content:'Benutzer hinzufügen', ontap:'addNewChild'}
+            {kind:'onyx.Button', content:'Benutzer hinzufügen', ontap:'addNewChild'},
+			{classes: "view-heading", content: "Benutzer verwalten"}
         ]},
 		{kind:'Grundschrift.Views.ChildGrid', fit:true, onChildSelected: 'childSelected'}
 	],

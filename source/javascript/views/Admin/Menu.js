@@ -44,7 +44,8 @@ enyo.kind({
 					kind:'ImageButton',
 					type:'Exit',
 					ontap:'doBack'
-				}
+				},
+				{classes: "view-heading", content: "App verwalten"}
             ]},
             {kind:'Scroller', classes: 'onyx-menu onyx-picker', fit:true}
         ]}

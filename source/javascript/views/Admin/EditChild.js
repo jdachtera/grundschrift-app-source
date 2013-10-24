@@ -26,11 +26,12 @@ enyo.kind({
 	},
     components:[
         {kind:'onyx.Toolbar', style:'height:80px', components:[
-            {kind:'ImageButton', type:'Exit', ontap:'doBack'},
-            //{kind:"onyx.Button", content:"Statistik", ontap:"statisticsTap"},
-            {kind:"onyx.Button", content:"Speichern", ontap:"saveTap"},
+			{kind:'ImageButton', type:'Exit', ontap:'doBack'},
+			//{kind:"onyx.Button", content:"Statistik", ontap:"statisticsTap"},
+			{kind:"onyx.Button", content:"Speichern", ontap:"saveTap"},
 			{kind:"onyx.Button", content:"Speichern und zum Hauptmenü", ontap:"saveAndToMainMenu"},
-            {kind:"onyx.Button", content:"Löschen", ontap:"confirmDelete"}
+			{kind:"onyx.Button", content:"Löschen", ontap:"confirmDelete"},
+			{classes: "view-heading", content: "Benutzer bearbeiten"}
         ]},
         {kind:'Scroller', fit:true, components:[
             {kind:'onyx.Groupbox', style: "width: 50%; margin: 10pt auto; background:#fffafa", components:[

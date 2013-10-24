@@ -3,66 +3,57 @@
 .levelMenuItem { //.bordered;
   padding: @marginWidth;
   padding-bottom: 0;
-  &:active, &.selected { //.bordered.active
-  }
-  .starsWrapper, .caption {
-    text-align: center;
-  }
-
-  .starsWrapper {
-    padding: @marginWidth 0;
-
-    .stars {
-      .rounded(5px);
-      background-color: #fffafa;
-      padding: 0 4px;
-      display: inline-block;
-    }
-  }
-
-  .caption {
-    color: #333;
-    img {
-      height: 140px;
-    }
-    .rounded(3px);
-  }
-
-  border: 1px darken(#fff, 10%) solid;
+  color: #333;
+  //border: 1px darken(#fff, 10%) solid;
   .rounded(5px);
+  background-color: #fffafa;
+  opacity: 0.5;
+  text-align: center;
+  box-shadow: #888 0px 0px 10px;
+
+  .sessionStars {
+    margin:  @marginWidth / 2 0 @marginWidth 0;
+
+  }
+
+  .levelImage {
+    height: 140px;
+  }
 
   &.solved {
     background-color: green;
   }
 
-  background-color: #fffafa;
-
-  opacity: 0.5;
   &.enabled {
     opacity: 1;
     &:active, &.selected {
       background-color: @highlightColor;
     }
   }
-  &.orange .caption {
+  .colorStripe {
+    display: block;
+    height: 20px;
+    .rounded(3px);
+  }
+  &.orange .colorStripe {
     background-color: @orange;
   }
-  &.red .caption {
+  &.red .colorStripe {
     background-color: @red;
   }
-  &.green .caption {
+  &.green .colorStripe {
     background-color: @green;
   }
-  &.blue .caption {
+  &.blue .colorStripe {
     background-color: @blue;
   }
-  &.violet .caption {
+  &.violet .colorStripe {
     background-color: @violet;
   }
-  &.darkblue .caption {
+  &.darkblue .colorStripe {
     background-color: @darkblue;
   }
-  &.none .caption {
+  &.none .colorStripe {
     background-color: @gridItemBackground;
   }
 }

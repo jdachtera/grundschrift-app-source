@@ -12,7 +12,8 @@ enyo.kind({
 					kind:'ImageButton',
 					type:'Exit',
 					ontap:'doBack'
-				}
+				},
+				{classes: 'view-heading', content: 'Über diese Anwendung'}
 			]
 		},
 		{

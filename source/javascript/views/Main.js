@@ -78,7 +78,7 @@ enyo.kind({
 				}
 			]},
 			{classes: 'numberImage', name: 'numberImage'},
-			{classes: 'sessionStars', kind:'Grundschrift.Views.SessionStars', max:5, size:32, onAnimationEnd:'resetCanvas', animation: true}
+			{classes: 'sessionStars', kind:'Grundschrift.Views.SessionStars', max:5, size:48, onAnimationEnd:'resetCanvas', animation: true}
 
 		]},
     ],
@@ -321,7 +321,13 @@ enyo.kind({
         enyo.asyncMethod(this, function () {
 			var aid = this.$.canvas.getAid();
 
-			this.successHistory += inEvent.success ? 1 : -1;
+			//this.successHistory += inEvent.success ? 1 : -1;
+			if (inEvent.success) {
+				this.successHistory = 0;
+			} else {
+				this.successHistory -= 1;
+			}
+
 			this.successHistory = this.successHistory < -3 ? -3 : (this.successHistory > 0 ? 0 : this.successHistory);
 			if (this.successHistory == -3) {
 				this.setAid(true);
