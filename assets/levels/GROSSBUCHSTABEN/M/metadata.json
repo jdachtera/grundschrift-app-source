@@ -2,15 +2,15 @@
   "id": "5A58F2DE-9A46-4DEC-A2AC-F309B025CD6B",
   "name": "M",
   "category": "GROSSBUCHSTABEN",
-  "className": "orange",
-  "_lastChange": 1374603936256,
   "illustrations": [
     "Mädchen",
     "Maus",
     "Mond"
   ],
+  "className": "orange",
   "unlockCondition": "",
   "lineWidth": 48,
+  "_lastChange": 1382512820327,
   "paths": [
     [
       {
@@ -33,11 +33,13 @@
       },
       {
         "x": 211.68617021276597,
-        "y": 330.70744680851067
+        "y": 330.70744680851067,
+        "isAnchor": true
       },
       {
         "x": 388.55186170212767,
-        "y": 78.49069148936171
+        "y": 78.49069148936171,
+        "isAnchor": true
       },
       {
         "x": 389.59840425531917,

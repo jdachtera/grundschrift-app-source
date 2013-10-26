@@ -2,14 +2,14 @@
   "id": "7F725962-4140-4B1D-98CF-906C09CE4A3C",
   "name": "S",
   "category": "GROSSBUCHSTABEN",
-  "className": "violet",
-  "_lastChange": 1374603936256,
   "illustrations": [
     "Seestern",
     "Sonne"
   ],
+  "className": "violet",
   "unlockCondition": "",
-  "lineWidth": 43,
+  "lineWidth": 49,
+  "_lastChange": 1382514476212,
   "paths": [
     [
       {

@@ -2,15 +2,15 @@
   "id": "25BAD4D4-1166-424A-8D9F-E58E97F1A8F3",
   "name": "b",
   "category": "kleinbuchstaben",
-  "className": "green",
-  "_lastChange": 1374603936256,
   "illustrations": [
     "blau",
     "Erdbeere",
     "Rabe"
   ],
+  "className": "green",
   "unlockCondition": "",
-  "lineWidth": 49,
+  "lineWidth": 52,
+  "_lastChange": 1382515323724,
   "paths": [
     [
       {
@@ -20,7 +20,8 @@
       },
       {
         "x": 35.60172872340426,
-        "y": 509.66622340425533
+        "y": 509.66622340425533,
+        "isAnchor": true
       },
       {
         "x": 36.64827127659574,
@@ -44,7 +45,8 @@
       },
       {
         "x": 142.34906914893617,
-        "y": 286.7526595744681
+        "y": 286.7526595744681,
+        "isAnchor": true
       },
       {
         "x": 193.62965425531917,

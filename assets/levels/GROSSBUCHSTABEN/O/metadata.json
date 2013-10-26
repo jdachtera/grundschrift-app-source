@@ -2,15 +2,15 @@
   "id": "5C9D2519-9D95-4B0A-8314-0EF2CE40A04F",
   "name": "O",
   "category": "GROSSBUCHSTABEN",
-  "className": "blue",
-  "_lastChange": 1374603936256,
   "illustrations": [
     "Ofen",
     "Ohren",
     "Ordner"
   ],
+  "className": "blue",
   "unlockCondition": "",
-  "lineWidth": 47,
+  "lineWidth": 49,
+  "_lastChange": 1382514100008,
   "paths": [
     [
       {

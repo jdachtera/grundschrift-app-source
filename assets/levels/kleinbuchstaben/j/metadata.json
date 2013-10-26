@@ -2,15 +2,15 @@
   "id": "41458C22-7063-4D6F-B165-C340A9CA736F",
   "name": "j",
   "category": "kleinbuchstaben",
-  "className": "violet",
-  "_lastChange": 1374603936256,
   "illustrations": [
     "Boje",
     "ja",
     "jucken"
   ],
+  "className": "violet",
   "unlockCondition": "",
-  "lineWidth": 47,
+  "lineWidth": 52,
+  "_lastChange": 1382515877786,
   "paths": [
     [
       {

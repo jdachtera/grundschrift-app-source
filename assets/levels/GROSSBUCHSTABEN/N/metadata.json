@@ -2,14 +2,14 @@
   "id": "8367D2A1-DF63-4C45-84E8-7D6EC31C84F3",
   "name": "N",
   "category": "GROSSBUCHSTABEN",
-  "className": "orange",
-  "_lastChange": 1374603936256,
   "illustrations": [
     "Nase",
     "Nest"
   ],
+  "className": "orange",
   "unlockCondition": "",
   "lineWidth": 56,
+  "_lastChange": 1382512840070,
   "paths": [
     [
       {
@@ -32,7 +32,8 @@
       },
       {
         "x": 309.876329787234,
-        "y": 505.4800531914894
+        "y": 505.4800531914894,
+        "isAnchor": true
       },
       {
         "x": 303.59707446808505,
