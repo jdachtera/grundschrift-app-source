@@ -163,11 +163,15 @@ enyo.kind({
      * @returns void
      */
     cellClick:function (inSender, inEvent) {
+		if (inEvent.originator.name == 'groupHeader') {
+			return;
+		}
+		
         var element = inEvent.dispatchTarget;
         while (element !== undefined && element !== null && element.index === undefined) {
             element = element.parent;
         }
-        if (element) {
+        if (element && inSender != element.$.groupHeader) {
             return this.bubble('onItemTap', {item:element});
         }
     },
