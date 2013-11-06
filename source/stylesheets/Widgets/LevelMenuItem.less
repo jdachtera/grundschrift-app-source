@@ -1,7 +1,10 @@
 @import "../variables";
 
 .levelMenuItem { //.bordered;
-  padding: @marginWidth;
+  padding: @marginWidth / 2;
+  border-width: @marginWidth / 2;
+  border-style: solid;
+  border-color: #fffafa;
   padding-bottom: 0;
   color: #333;
   //border: 1px darken(#fff, 10%) solid;
@@ -9,7 +12,7 @@
   background-color: #fffafa;
   opacity: 0.5;
   text-align: center;
-  box-shadow: #888 0px 0px 10px;
+  box-shadow: @shadowColor 0px 0px 10px;
 
   .sessionStars {
     margin:  @marginWidth / 2 0 @marginWidth 0;
@@ -26,8 +29,11 @@
 
   &.enabled {
     opacity: 1;
-    &:active, &.selected {
-      background-color: @highlightColor;
+    &:active {
+      border-color: @activeHighlightColor;
+    }
+    &.selected {
+      border-color: @highlightColor;
     }
   }
   .colorStripe {

@@ -23,16 +23,21 @@
         border-bottom-right-radius: 5px;
         border-top-left-radius: 0;
         border-top-right-radius: 5px;
-
+        border-style: solid;
+        border-color: #fffafa;
         background: #fffafa;
-        box-shadow: #888 0px 0px 10px;
+        box-shadow: @shadowColor 0px 0px 10px;
         margin: @marginWidth / 2 0;
         width: 80%;
-        padding: @marginWidth;
+        border-width: @marginWidth / 2 @marginWidth / 2 @marginWidth / 2 0;
+        padding: @marginWidth / 2 @marginWidth / 2 @marginWidth / 2 @marginWidth;
         padding-bottom: 0;
         //opacity: 0.8;
-        &:active, &.active {
-          background-color: @highlightColor;
+        &:active {
+          border-color: @activeHighlightColor;
+        }
+        &.active {
+          border-color: @highlightColor;
         }
       }
     }
@@ -46,6 +51,9 @@
       .gridItemContainer {
         text-align: right;
         .categoryMenuItem {
+          border-width: 0 @marginWidth / 2 @marginWidth / 2 @marginWidth / 2;
+          padding: @marginWidth @marginWidth / 2 @marginWidth / 2 @marginWidth / 2;
+
           border-bottom-left-radius: 5px;
           border-bottom-right-radius: 0px;
           border-top-left-radius: 5px;

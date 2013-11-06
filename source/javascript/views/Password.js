@@ -31,13 +31,13 @@ enyo.kind({
         ]},
         {kind:'Control', classes:'password', components:[
             {classes:'inputImages', components:[
-                {components:[
+                {name: 'container1', components:[
                     {kind:'Image', name:'input1', src:''}
                 ]},
-                {components:[
+                {name: 'container2', components:[
                     {kind:'Image', name:'input2', src:''}
                 ]},
-                {components:[
+                {name: 'container3', components:[
                     {kind:'Image', name:'input3', src:''}
                 ]}
             ]},
@@ -45,14 +45,14 @@ enyo.kind({
             {kind:'Image', style:'height:10%', name:'emoticon', src:''},
 
             {classes:'passwordImages', components:[
-                {components:[
-                    {kind:'Image', src:'assets/images/password1.png', ontap:'click', index:1}
+                {ontap:'click', index:1, components:[
+                    {kind:'Image', src:'assets/images/password1.png'}
                 ]},
-                {components:[
-                    {kind:'Image', src:'assets/images/password2.png', ontap:'click', index:2}
+                {ontap:'click', index:2, components:[
+                    {kind:'Image', src:'assets/images/password2.png'}
                 ]},
-                {components:[
-                    {kind:'Image', src:'assets/images/password3.png', ontap:'click', index:3}
+                {ontap:'click', index:3, components:[
+                    {kind:'Image', src:'assets/images/password3.png'}
                 ]}
             ]}
         ]}
@@ -81,6 +81,7 @@ enyo.kind({
         this.input.length = 0;
         for (var i = 1; i < 4; i++) {
             this.$['input' + i].setSrc('assets/images/passwordBlank.png');
+			this.$['container' + i].removeClass('solved');
         }
     },
 
@@ -92,7 +93,8 @@ enyo.kind({
     click:function (inSender, inEvent) {
         this.$.emoticon.setSrc('assets/icons/blank.png');
         this.input.push(inSender.index);
-        this.$['input' + this.input.length].setSrc(inSender.src);
+        this.$['input' + this.input.length].setSrc(inSender.children[0].src);
+		this.$['container' + this.input.length].addClass('solved');
         if (this.input.length == this.password.length) {
             for (var i = 0; i < this.input.length; i++) {
                 if (this.input[i] != this.password[i]) {

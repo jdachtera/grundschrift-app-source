@@ -16,17 +16,23 @@
       padding: 10px;
       border-radius: 5px;
       margin-right: 3px;
+      box-shadow: @shadowColor 0px 0px 10px;
     }
     margin-right: @marginWidth;
     margin-bottom: @marginWidth;
     .gridItem { //.bordered;
+
+      padding: @marginWidth / 2;
+      border-width: @marginWidth / 2;
+      border-style: solid;
+      border-color: #fffafa;
       &:active { //.bordered.active;
-        background-color: @highlightColor;
+        border-color: @activeHighlightColor;
       }
-      padding: @marginWidth;
       padding-bottom: 0;
       background-color: #fffafa;
-      border: 1px darken(#fff, 10%) solid;
+      //border: 1px darken(#fff, 10%) solid;
+      box-shadow: @shadowColor 0px 0px 10px;
       .rounded(5px);
 
       .nameWrapper {
