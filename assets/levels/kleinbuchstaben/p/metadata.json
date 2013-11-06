@@ -2,14 +2,14 @@
   "id": "1AEAF7B0-F2B8-4EA0-9081-453B785D7D06",
   "name": "p",
   "category": "kleinbuchstaben",
-  "className": "green",
-  "_lastChange": 1374603936256,
   "illustrations": [
     "Popel",
     "Teppich"
   ],
+  "className": "green",
   "unlockCondition": "",
-  "lineWidth": 51,
+  "lineWidth": 53,
+  "_lastChange": 1382516271175,
   "paths": [
     [
       {
@@ -48,7 +48,8 @@
       },
       {
         "x": 147.91283783783786,
-        "y": 274.1206081081081
+        "y": 274.1206081081081,
+        "isAnchor": true
       },
       {
         "x": 177.15945945945947,

@@ -2,14 +2,14 @@
   "id": "9AB16BB5-AF93-4242-8674-918A56637452",
   "name": "V",
   "category": "GROSSBUCHSTABEN",
-  "className": "orange",
-  "_lastChange": 1374603936256,
   "illustrations": [
     "Vase",
     "Vogel"
   ],
+  "className": "orange",
   "unlockCondition": "",
   "lineWidth": 53,
+  "_lastChange": 1382514613668,
   "paths": [
     [
       {
@@ -23,7 +23,8 @@
       },
       {
         "x": 177.15093085106383,
-        "y": 510.71276595744683
+        "y": 510.71276595744683,
+        "isAnchor": true
       },
       {
         "x": 337.27194148936167,

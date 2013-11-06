@@ -2,14 +2,14 @@
   "id": "2E4296A7-452B-4AB6-8E39-D1679920501C",
   "name": "q",
   "category": "kleinbuchstaben",
-  "className": "blue",
-  "_lastChange": 1374603936256,
   "illustrations": [
     "Aquarium",
     "quaken"
   ],
+  "className": "blue",
   "unlockCondition": "",
   "lineWidth": 41,
+  "_lastChange": 1382516330821,
   "paths": [
     [
       {
@@ -103,7 +103,8 @@
       },
       {
         "x": 238.30478896103895,
-        "y": 286.1818181818182
+        "y": 286.1818181818182,
+        "isAnchor": true
       },
       {
         "x": 238.30478896103895,

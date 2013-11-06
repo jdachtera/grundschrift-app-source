@@ -2,15 +2,15 @@
   "id": "F7B79D66-CA6C-43A5-84B6-FBFFF3C2EFB4",
   "name": "s",
   "category": "kleinbuchstaben",
-  "className": "violet",
-  "_lastChange": 1374603936256,
   "illustrations": [
     "Eis",
     "Kiste",
     "sieben"
   ],
+  "className": "violet",
   "unlockCondition": "",
-  "lineWidth": 40,
+  "lineWidth": 49,
+  "_lastChange": 1382516435983,
   "paths": [
     [
       {

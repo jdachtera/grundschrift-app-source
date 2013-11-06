@@ -2,14 +2,14 @@
   "id": "A30B5634-9A7C-4822-80EB-B2A7445A8D83",
   "name": "y",
   "category": "kleinbuchstaben",
-  "className": "violet",
-  "_lastChange": 1374603936256,
   "illustrations": [
     "Baby",
     "Pony"
   ],
+  "className": "violet",
   "unlockCondition": "",
-  "lineWidth": 43,
+  "lineWidth": 49,
+  "_lastChange": 1382517740523,
   "paths": [
     [
       {

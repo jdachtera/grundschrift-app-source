@@ -2,15 +2,15 @@
   "id": "CAFA2A4D-B829-4408-BF36-7E6F39894659",
   "name": "ie",
   "category": "verbindungen",
-  "className": "",
-  "_lastChange": 1374603936256,
   "illustrations": [
     "vier",
     "Biene",
     "Riese"
   ],
+  "className": "",
   "unlockCondition": "",
-  "lineWidth": 57,
+  "lineWidth": 60,
+  "_lastChange": 1382519229271,
   "paths": [
     [
       {

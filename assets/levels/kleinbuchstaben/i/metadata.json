@@ -2,15 +2,15 @@
   "id": "13597970-F6C7-4F70-B670-47F080EE5AC9",
   "name": "i",
   "category": "kleinbuchstaben",
-  "className": "darkblue",
-  "_lastChange": 1374603936256,
   "illustrations": [
     "Biene",
     "Riese",
     "Wiese"
   ],
+  "className": "darkblue",
   "unlockCondition": "",
-  "lineWidth": 45,
+  "lineWidth": 48,
+  "_lastChange": 1382515821337,
   "paths": [
     [
       {

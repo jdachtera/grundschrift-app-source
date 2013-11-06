@@ -2,14 +2,14 @@
   "id": "FB242CE5-486F-440E-93DD-16EC603F6C21",
   "name": "z",
   "category": "kleinbuchstaben",
-  "className": "violet",
-  "_lastChange": 1374603936256,
   "illustrations": [
     "Katze",
     "zehn"
   ],
+  "className": "violet",
   "unlockCondition": "",
   "lineWidth": 48,
+  "_lastChange": 1382517780330,
   "paths": [
     [
       {
@@ -19,7 +19,8 @@
       },
       {
         "x": 234.0137987012987,
-        "y": 281.07142857142856
+        "y": 281.07142857142856,
+        "isAnchor": true
       },
       {
         "x": 181.63230519480518,
@@ -27,7 +28,8 @@
       },
       {
         "x": 30.87581168831169,
-        "y": 505.2897727272727
+        "y": 505.2897727272727,
+        "isAnchor": true
       },
       {
         "x": 239.762987012987,
