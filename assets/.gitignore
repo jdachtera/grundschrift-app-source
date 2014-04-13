@@ -1,5 +1,8 @@
 levels/*/*/*.png
 levels/*/*.png
+levels/export.json
+levels/import.coffee
+levels/import.js
 images
 icons
 sounds
